@@ -1,0 +1,43 @@
+{
+  "name": "kuzzle-plugin-s3-upload",
+  "author": "The Kuzzle Team <support@kuzzle.io>",
+  "version": "1.0.0",
+  "description": "Kuzzle plugin to upload file on S3 using presigned URL",
+  "main": "lib/S3Plugin.js",
+  "scripts": {
+    "test": "npm run --silent lint && npm run unit-testing",
+    "lint": "eslint --max-warnings=0 ./lib",
+    "unit-testing": "./node_modules/.bin/mocha test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuzzleio/kuzzle-plugin-s3-upload.git"
+  },
+  "keywords": [
+    "kuzzle",
+    "plugin",
+    "s3",
+    "aws",
+    "upload"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/kuzzleio/kuzzle-plugin-s3-upload/issues"
+  },
+  "homepage": "https://github.com/kuzzleio/kuzzle-plugin-s3-upload#readme",
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "kuzzle-common-objects": "^3.0.13",
+    "mocha": "^5.2.0",
+    "mock-require": "^3.0.3",
+    "rewire": "^4.0.1",
+    "should-sinon": "0.0.6",
+    "sinon": "^7.2.3",
+    "should": "^13.2.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.434.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}

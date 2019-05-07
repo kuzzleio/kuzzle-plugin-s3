@@ -1,0 +1,4 @@
+{
+  "name": "kuzzle-plugin-s3-upload",
+  "kuzzleVersion": ">=1.0.0 <2.0.0"
+}
