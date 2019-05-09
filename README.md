@@ -31,7 +31,7 @@ Finaly you have to validate the uploaded file otherwise the plugin will automati
 // Kuzzle request
 {
   "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "validate",
+  "action": "validateUpload",
   "fileKey": "xen/<uuid>/headcrab.png"
 }
 ```
@@ -59,7 +59,7 @@ Finaly you have to validate the uploaded file otherwise the plugin will automati
   // Validate the uploaded file
   await kuzzle.query({
     controller: 'kuzzle-plugin-s3-upload/file',
-    action: 'validate',
+    action: 'validateUpload',
     fileKey: result.fileKey
   });
 
@@ -76,7 +76,7 @@ You can see a full example here: [test/s3-upload-test.html](test/s3-upload-test.
 Returns a Presigned URL to upload directly to S3.  
 The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/1/manual-setup/config/))
 
-File uploaded to the generated URL must be validated with `validate` otherwise they will be deleted after the same TTL as for the URL expiration.
+File uploaded to the generated URL must be validated with `validateUpload` otherwise they will be deleted after the same TTL as for the URL expiration.
 
 *Request format:*
 
@@ -108,7 +108,7 @@ File uploaded to the generated URL must be validated with `validate` otherwise t
 }
 ```
 
-#### *file:validate*
+#### *file:validateUpload*
 
 Validate and persist a previsously uploaded file.  
 Without a call to the action, every file uploaded on a Presigned URL will be deleted after a TTL.
@@ -119,7 +119,7 @@ Without a call to the action, every file uploaded on a Presigned URL will be del
 {
   // Kuzzle API params
   "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "validate",
+  "action": "validateUpload",
 
   // File key in S3 bucket
   "fileKey": "xen/<uuid>/headcrab.png" 

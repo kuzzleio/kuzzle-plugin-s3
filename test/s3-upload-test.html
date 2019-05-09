@@ -52,7 +52,7 @@
         // Validate the uploaded file
         const { result } = await window.kuzzle.query({
           controller: 'kuzzle-plugin-s3-upload/file',
-          action: 'validate',
+          action: 'validateUpload',
           fileKey
         });
 

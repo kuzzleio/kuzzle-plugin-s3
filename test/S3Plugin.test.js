@@ -249,4 +249,37 @@ describe('S3Plugin', () => {
       ).be.rejectedWith(BadRequestError);
     });
   });
+
+  describe('#validateUpload', () => {
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            fileKey: 'xen/0/headcrab.png'
+          }
+        }
+      };  
+    });
+
+    it('deletes the associated key in Redis', async () => {
+      const response = await s3Plugin.validateUpload(request);
+      
+      should(s3Plugin.context.accessors.sdk.ms.del)
+        .be.calledOnce()
+        .be.calledWith(['s3Plugin/fileController/xen/0/headcrab.png']);
+      
+      should(response).be.eql({
+        fileKey: 'xen/0/headcrab.png',
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
+      });
+    });
+
+    it('throws an error if "fileKey" param is not present', async () => {
+      delete request.input.args.fileKey;
+
+      return should(
+        s3Plugin.validateUpload(request)
+      ).be.rejectedWith(BadRequestError);
+    });
+  });
 });
