@@ -62,10 +62,10 @@ describe('S3Plugin', () => {
     };
 
     uuidCount = 0;
-    uuidMock = () => uuidCount++;
+    uuidMock = () => `${uuidCount++}`;
 
     mockrequire('aws-sdk', awsSdkMock);
-    mockrequire('../lib/uuid', uuidMock);
+    mockrequire('uuid', uuidMock);
 
     context = {
       accessors: {
@@ -87,6 +87,10 @@ describe('S3Plugin', () => {
     S3Plugin = mockrequire.reRequire('../lib/S3Plugin');
     s3Plugin = new S3Plugin();
     s3Plugin.init(config, context);
+  });
+
+  afterEach(() => {
+    mockrequire.stopAll();
   });
 
   describe('#getUploadUrl', () => {
