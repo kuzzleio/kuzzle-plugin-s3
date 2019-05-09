@@ -27,6 +27,8 @@ services:
       - kuzzle_services__memoryStorage__node__host=redis
       - NODE_ENV=development
       - DEBUG=kuzzle:plugins
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
   redis:
     image: redis:3.2

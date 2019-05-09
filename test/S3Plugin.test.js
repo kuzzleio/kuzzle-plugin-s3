@@ -98,6 +98,7 @@ describe('S3Plugin', () => {
       request = {
         input: {
           args: {
+            uploadDir: 'xen',
             filename: 'headcrab.png'
           }
         }
@@ -120,7 +121,8 @@ describe('S3Plugin', () => {
       should(response).be.eql({
         uploadUrl: 'http://url.s3',
         fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png',
-        fileKey: 'xen/0/headcrab.png'
+        fileKey: 'xen/0/headcrab.png',
+        ttl: 3600000
       });
     });
 
@@ -220,7 +222,7 @@ describe('S3Plugin', () => {
     });
   });
 
-  describe('#getFileUrl', () => {
+  describe('#getUrl', () => {
     beforeEach(() => {
       request = {
         input: {
@@ -232,9 +234,11 @@ describe('S3Plugin', () => {
     });
 
     it('returns the file url', async () => {
-      const response = await s3Plugin.getFileUrl(request);
+      const response = await s3Plugin.getUrl(request);
       
-      should(response).be.eql('https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png');
+      should(response).be.eql({
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
+      });
     });
 
     it('throws an error if "fileKey" param is not present', async () => {
