@@ -7,7 +7,8 @@
   "scripts": {
     "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
-    "unit-testing": "./node_modules/.bin/mocha test/"
+    "unit-testing": "./node_modules/.bin/mocha test/",
+    "build": "babel lib -d build"
   },
   "repository": {
     "type": "git",
@@ -26,14 +27,17 @@
   },
   "homepage": "https://github.com/kuzzleio/kuzzle-plugin-s3#readme",
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "eslint": "^5.13.0",
     "kuzzle-common-objects": "^3.0.13",
     "mocha": "^5.2.0",
     "mock-require": "^3.0.3",
     "rewire": "^4.0.1",
+    "should": "^13.2.3",
     "should-sinon": "0.0.6",
-    "sinon": "^7.2.3",
-    "should": "^13.2.3"
+    "sinon": "^7.2.3"
   },
   "dependencies": {
     "aws-sdk": "^2.434.0",
