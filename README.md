@@ -1,4 +1,4 @@
-# kuzzle-plugin-s3-upload
+# Kuzzle Plugin S3
 
 This plugin exposes actions to upload files to Amazon S3 using [Presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html).  
 
@@ -9,8 +9,8 @@ Get a Presigned URL:
 ```javascript
 // Kuzzle request
 {
-  "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "getUploadUrl",
+  "controller": "s3/upload",
+  "action": "getUrl",
   "filename": "headcrab.png",
   "uploadDir": "xen"
 }
@@ -30,8 +30,8 @@ Finally, validate the uploaded file. If not validated in a timely manner (the TT
 ```javascript
 // Kuzzle request
 {
-  "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "validateUpload",
+  "controller": "s3/upload",
+  "action": "validate",
   "fileKey": "xen/<uuid>/headcrab.png"
 }
 ```
@@ -42,8 +42,8 @@ Finally, validate the uploaded file. If not validated in a timely manner (the TT
   // Get a Presigned URL
   const file = document.getElementById('uploadInput').files[0];
   const { result } = await kuzzle.query({
-    controller: 'kuzzle-plugin-s3-upload/file',
-    action: 'getUploadUrl',
+    controller: 's3/upload',
+    action: 'getUrl',
     uploadDir: 'xen',
     filename: file.name
   });
@@ -58,30 +58,30 @@ Finally, validate the uploaded file. If not validated in a timely manner (the TT
 
   // Validate the uploaded file
   await kuzzle.query({
-    controller: 'kuzzle-plugin-s3-upload/file',
-    action: 'validateUpload',
+    controller: 's3/upload',
+    action: 'validate',
     fileKey: result.fileKey
   });
 ```
 
-You can see a full example here: [test/s3-upload-test.html](test/s3-upload-test.html)
+You can see a full example here: [test/s3-test.html](test/s3-test.html)
 
 ### API
 
-#### *file:getUploadUrl*
+#### *upload:getUrl*
 
 Returns a Presigned URL to upload directly to S3.  
 The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/1/manual-setup/config/))
 
-File uploaded to the generated URL must be validated with `validateUpload` otherwise they will be deleted after the same TTL as for the URL expiration.
+File uploaded to the generated URL must be validated with `upload:validate` otherwise they will be deleted after the same TTL as for the URL expiration.
 
 *Request format:*
 
 ```javascript
 {
   // Kuzzle API params
-  "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "getUploadUrl",
+  "controller": "s3/upload",
+  "action": "getUrl",
 
   // Uploaded file name
   "filename": "headcrab.png", 
@@ -105,7 +105,7 @@ File uploaded to the generated URL must be validated with `validateUpload` other
 }
 ```
 
-#### *file:validateUpload*
+#### *upload:validate*
 
 Validate and persist a previsously uploaded file.  
 Without a call to the action, every file uploaded on a Presigned URL will be deleted after a TTL.
@@ -115,8 +115,8 @@ Without a call to the action, every file uploaded on a Presigned URL will be del
 ```javascript
 {
   // Kuzzle API params
-  "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "validateUpload",
+  "controller": "s3/upload",
+  "action": "validate",
 
   // File key in S3 bucket
   "fileKey": "xen/<uuid>/headcrab.png" 
@@ -143,7 +143,7 @@ Returns the public file URL.
 ```javascript
 {
   // Kuzzle API params
-  "controller": "kuzzle-plugin-s3-upload/file",
+  "controller": "s3/file",
   "action": "getUrl",
 
   // File key in S3 bucket
@@ -160,7 +160,7 @@ Returns the public file URL.
 }
 ```
 
-#### *file:deleteFile*
+#### *file:delete*
 
 Deletes an uploaded file from S3.
 
@@ -169,8 +169,8 @@ Deletes an uploaded file from S3.
 ```javascript
 {
   // Kuzzle API params
-  "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "deleteFile",
+  "controller": "s3/file",
+  "action": "delete",
 
   "fileKey": "xen/<uuid>/headcrab.png" // File key in S3 bucket
 }
@@ -179,14 +179,13 @@ Deletes an uploaded file from S3.
 ## Configuration
 
 You need to set your AWS access key: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
-Otherwise the plugin actions will not be available.  
 
 In your `kuzzlerc` file, you can change the following configuration variable:
 
 ```js
 {
   "plugins": {
-    "kuzzle-plugin-s3-upload": {
+    "s3": {
       // AWS S3 bucket
       "bucketName": "your-s3-bucket",
       // AWS S3 region
@@ -194,7 +193,7 @@ In your `kuzzlerc` file, you can change the following configuration variable:
       // TTL in ms before Presigned URL expire or the uploaded file is deleted
       "signedUrlTTL": 1200000,
       // Redis key prefix
-      "redisPrefix": "s3Plugin/fileController"
+      "redisPrefix": "s3Plugin/uploads"
     }
   }
 }

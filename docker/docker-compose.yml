@@ -8,7 +8,7 @@ services:
       - "./run-dev.sh:/run-dev.sh"
       - "./install-plugins.sh:/install-plugins.sh"
       - "./pm2.json:/config/pm2.json"
-      - "..:/var/app/plugins/enabled/kuzzle-plugin-s3-upload"
+      - "..:/var/app/plugins/enabled/kuzzle-plugin-s3"
     cap_add:
       - SYS_PTRACE
     ulimits:

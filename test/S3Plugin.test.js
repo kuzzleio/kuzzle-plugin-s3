@@ -58,7 +58,7 @@ describe('S3Plugin', () => {
       uploadDir: 'xen',
       region: 'eu-west-3',
       signedUrlTTL: 3600 * 1000,
-      redisPrefix: 's3Plugin/fileController'
+      redisPrefix: 's3Plugin/uploads'
     };
 
     uuidCount = 0;
@@ -93,7 +93,7 @@ describe('S3Plugin', () => {
     mockrequire.stopAll();
   });
 
-  describe('#getUploadUrl', () => {
+  describe('#uploadGetUrl', () => {
     beforeEach(() => {
       request = {
         input: {
@@ -108,7 +108,7 @@ describe('S3Plugin', () => {
     it('returns a presigned url from aws s3', async () => {
       s3Plugin._deleteExpiredFile = sinon.stub();
 
-      const response = await s3Plugin.getUploadUrl(request);
+      const response = await s3Plugin.uploadGetUrl(request);
 
       should(getSignedUrlStub)
         .be.calledOnce()
@@ -130,11 +130,11 @@ describe('S3Plugin', () => {
       s3Plugin.config.signedUrlTTL = 50;
       s3Plugin.context.accessors.sdk.ms.get.resolves(true);
 
-      s3Plugin.getUploadUrl(request)
+      s3Plugin.uploadGetUrl(request)
         .then(() => {
           should(s3Plugin.context.accessors.sdk.ms.set)
             .be.calledOnce()
-            .be.calledWith('s3Plugin/fileController/xen/0/headcrab.png', 'temporary', { ex: 60.05 });
+            .be.calledWith('s3Plugin/uploads/xen/0/headcrab.png', 'temporary', { ex: 60.05 });
 
           setTimeout(() => {
             should(s3Plugin.context.accessors.sdk.ms.get).be.calledOnce();
@@ -143,7 +143,7 @@ describe('S3Plugin', () => {
               .be.calledWith({ Bucket: 'half-life', Key: 'xen/0/headcrab.png' });            
             should(s3Plugin.context.accessors.sdk.ms.del)
               .be.calledOnce()
-              .be.calledWith(['s3Plugin/fileController/xen/0/headcrab.png']);
+              .be.calledWith(['s3Plugin/uploads/xen/0/headcrab.png']);
 
             done();
           }, 100);
@@ -155,7 +155,7 @@ describe('S3Plugin', () => {
       delete request.input.args.filename;
 
       return should(
-        s3Plugin.getUploadUrl(request)
+        s3Plugin.uploadGetUrl(request)
       ).be.rejectedWith(BadRequestError);
     });
 
@@ -166,12 +166,45 @@ describe('S3Plugin', () => {
       s3Plugin.init(config, context);
 
       return should(
-        s3Plugin.getUploadUrl(request)
+        s3Plugin.uploadGetUrl(request)
       ).be.rejectedWith(KuzzleInternalError);          
     });
   });
 
-  describe('#deleteFile', () => {
+  describe('#uploadValidate', () => {
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            fileKey: 'xen/0/headcrab.png'
+          }
+        }
+      };  
+    });
+
+    it('deletes the associated key in Redis', async () => {
+      const response = await s3Plugin.uploadValidate(request);
+      
+      should(s3Plugin.context.accessors.sdk.ms.del)
+        .be.calledOnce()
+        .be.calledWith(['s3Plugin/uploads/xen/0/headcrab.png']);
+      
+      should(response).be.eql({
+        fileKey: 'xen/0/headcrab.png',
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
+      });
+    });
+
+    it('throws an error if "fileKey" param is not present', async () => {
+      delete request.input.args.fileKey;
+
+      return should(
+        s3Plugin.uploadValidate(request)
+      ).be.rejectedWith(BadRequestError);
+    });
+  });
+
+  describe('#fileDelete', () => {
     beforeEach(() => {
       request = {
         input: {
@@ -183,7 +216,7 @@ describe('S3Plugin', () => {
     });
 
     it('delete the file using aws sdk', async () => {
-      await s3Plugin.deleteFile(request);
+      await s3Plugin.fileDelete(request);
 
       should(headObjectMock)
         .be.calledOnce()
@@ -198,7 +231,7 @@ describe('S3Plugin', () => {
       headObjectMock.returns(s3Reject({ code: 'NotFound' }));
 
       return should(
-        s3Plugin.deleteFile(request)
+        s3Plugin.fileDelete(request)
       ).be.rejectedWith(NotFoundError);
     });
 
@@ -206,7 +239,7 @@ describe('S3Plugin', () => {
       delete request.input.args.fileKey;
 
       return should(
-        s3Plugin.deleteFile(request)
+        s3Plugin.fileDelete(request)
       ).be.rejectedWith(BadRequestError);
     });
 
@@ -217,12 +250,12 @@ describe('S3Plugin', () => {
       s3Plugin.init(config, context);
 
       return should(
-        s3Plugin.deleteFile(request)
+        s3Plugin.fileDelete(request)
       ).be.rejectedWith(KuzzleInternalError);          
     });
   });
 
-  describe('#getUrl', () => {
+  describe('#fileGetUrl', () => {
     beforeEach(() => {
       request = {
         input: {
@@ -234,7 +267,7 @@ describe('S3Plugin', () => {
     });
 
     it('returns the file url', async () => {
-      const response = await s3Plugin.getUrl(request);
+      const response = await s3Plugin.fileGetUrl(request);
       
       should(response).be.eql({
         fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
@@ -245,41 +278,9 @@ describe('S3Plugin', () => {
       delete request.input.args.fileKey;
 
       return should(
-        s3Plugin.deleteFile(request)
+        s3Plugin.fileDelete(request)
       ).be.rejectedWith(BadRequestError);
     });
   });
 
-  describe('#validateUpload', () => {
-    beforeEach(() => {
-      request = {
-        input: {
-          args: {
-            fileKey: 'xen/0/headcrab.png'
-          }
-        }
-      };  
-    });
-
-    it('deletes the associated key in Redis', async () => {
-      const response = await s3Plugin.validateUpload(request);
-      
-      should(s3Plugin.context.accessors.sdk.ms.del)
-        .be.calledOnce()
-        .be.calledWith(['s3Plugin/fileController/xen/0/headcrab.png']);
-      
-      should(response).be.eql({
-        fileKey: 'xen/0/headcrab.png',
-        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
-      });
-    });
-
-    it('throws an error if "fileKey" param is not present', async () => {
-      delete request.input.args.fileKey;
-
-      return should(
-        s3Plugin.validateUpload(request)
-      ).be.rejectedWith(BadRequestError);
-    });
-  });
 });
