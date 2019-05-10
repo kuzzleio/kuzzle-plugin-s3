@@ -239,9 +239,17 @@ Then you have to allow Cross Origin Request by editing the CORS Configuration:
 
 ## Installation
 
+### Node.js 8 and beyond
+
 Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
 
 For more information, refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
+
+### Node.js 6
+
+Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
+
+Then go to your plugin directory and run `npm run es5-compat`.  
 
 ### Local setup
 
@@ -257,3 +265,4 @@ docker-compose -f docker/docker-compose.yml up
 ```
 
 Then you can open the file [test/s3-upload-test.html](test/s3-upload-test.html) in your browser.
+

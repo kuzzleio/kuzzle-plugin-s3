@@ -5,10 +5,12 @@
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/S3Plugin.js",
   "scripts": {
+    "postinstall": "npm run build",
     "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
     "unit-testing": "./node_modules/.bin/mocha test/",
-    "build": "babel lib -d build"
+    "build": "babel lib -d build",
+    "es5-compat": "npm run build && node bin/es5-compat.js"
   },
   "repository": {
     "type": "git",
