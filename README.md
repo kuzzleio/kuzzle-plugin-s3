@@ -23,9 +23,9 @@ Get a Presigned URL:
 }
 ```
 
-Then make a PUT request to the `uploadUrl` with the file content in the body.  
+Then send a PUT request to the `uploadUrl` URL with the body set to the file's content.
 
-Finaly you have to validate the uploaded file otherwise the plugin will automaticaly remove it after a configurable TTL:
+Finally, validate the uploaded file. If not validated in a timely manner (the TTL is configurable), the uploaded file is automatically removed.
 
 ```javascript
 // Kuzzle request
@@ -36,7 +36,7 @@ Finaly you have to validate the uploaded file otherwise the plugin will automati
 }
 ```
 
-### Example with Kuzzle Javascript SDK
+### Example using the Javascript SDK
 
 ```js
   // Get a Presigned URL
@@ -173,7 +173,7 @@ Deletes an uploaded file from S3.
 {
   // Kuzzle API params
   "controller": "kuzzle-plugin-s3-upload/file",
-  "action": "getUrl",
+  "action": "deleteFile",
 
   "fileKey": "xen/<uuid>/headcrab.png" // File key in S3 bucket
 }
@@ -197,7 +197,7 @@ In your `kuzzlerc` file, you can change the following configuration variable:
       // TTL in ms before Presigned URL expire or the uploaded file is deleted
       "signedUrlTTL": 1200000,
       // Redis key prefix
-      "redisPrefis": "s3Plugin/fileController"
+      "redisPrefix": "s3Plugin/fileController"
     }
   }
 }
@@ -243,15 +243,15 @@ Then you have to allow Cross Origin Request by editing the CORS Configuration:
 
 ## Installation
 
-Clone this repository in yoyr `plugins/available` directory and then link it to the `plugins/enabled` directory.  
+Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
 
-For more informations please refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
+For more information, refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
 
 ### Local setup
 
-You can use the [docker-composer.yml](docker/docker-compose.yml) provided in this repository to start a Kuzzle stack with this plugin.  
+You can use the [docker-composer.yml](docker/docker-compose.yml) file provided in this repository to start a Kuzzle stack with this plugin pre-installed.  
 
-You have to provide valid credentials for AWS S3 through `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variable.
+You have to provide valid credentials for AWS S3 through the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
 
 ```bash
 export AWS_ACCESS_KEY_ID=your-access-key
