@@ -65,7 +65,7 @@ describe('S3Plugin', () => {
     uuidMock = () => `${uuidCount++}`;
 
     mockrequire('aws-sdk', awsSdkMock);
-    mockrequire('uuid', uuidMock);
+    mockrequire('uuid/v4', uuidMock);
 
     context = {
       accessors: {

@@ -62,9 +62,6 @@ Finaly you have to validate the uploaded file otherwise the plugin will automati
     action: 'validateUpload',
     fileKey: result.fileKey
   });
-
-  // Save a document in Kuzzle
-  await kuzzle.document.create('files', 'pictures', { fileKey, fileUrl: result.fileUrl });
 ```
 
 You can see a full example here: [test/s3-upload-test.html](test/s3-upload-test.html)
