@@ -31,7 +31,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
   redis:
-    image: redis:3.2
+    image: redis:5
 
   elasticsearch:
     image: kuzzleio/elasticsearch:5.6.10
