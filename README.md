@@ -243,13 +243,17 @@ Then you have to allow Cross Origin Request by editing the CORS Configuration:
 
 Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
 
+Then go to your plugin directory and run the following command `npm install`.
+
 For more information, refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
 
 ### Node.js 6
 
 Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
 
-Then go to your plugin directory and run `npm run es5-compat`.  
+Then go to your plugin directory and run the following commands: 
+ - `npm install`,
+ - `npm run es5-compat`.  
 
 ### Local setup
 
