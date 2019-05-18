@@ -17,7 +17,7 @@ Get a Presigned URL:
 
 // Kuzzle response
 {
-  "fileKey": "xen/<uuid>/headcrab.png",
+  "fileKey": "xen/<uuid>-headcrab.png",
   "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
   "fileUrl": "https://s3.eu-west-3.amazonaws.com/..."
 }
@@ -32,7 +32,7 @@ Finally, validate the uploaded file. If not validated in a timely manner (the TT
 {
   "controller": "s3/upload",
   "action": "validate",
-  "fileKey": "xen/<uuid>/headcrab.png"
+  "fileKey": "xen/<uuid>-headcrab.png"
 }
 ```
 
@@ -95,7 +95,7 @@ File uploaded to the generated URL must be validated with `upload:validate` othe
 ```javascript
 {
   // File key in S3 bucket
-  "fileKey": "xen/<uuid>/headcrab.png", 
+  "fileKey": "xen/<uuid>-headcrab.png", 
   // Presigned upload URL
   "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...", 
   // Public file URL after successful upload
@@ -119,7 +119,7 @@ Without a call to the action, every file uploaded on a Presigned URL will be del
   "action": "validate",
 
   // File key in S3 bucket
-  "fileKey": "xen/<uuid>/headcrab.png" 
+  "fileKey": "xen/<uuid>-headcrab.png" 
 }
 ```
 
@@ -128,7 +128,7 @@ Without a call to the action, every file uploaded on a Presigned URL will be del
 ```javascript
 {
   // File key in S3 bucket
-  "fileKey": "xen/<uuid>/headcrab.png", 
+  "fileKey": "xen/<uuid>-headcrab.png", 
   // Public file URL after successful upload
   "fileUrl": "https://s3.eu-west-3.amazonaws.com/..." 
 }
@@ -147,7 +147,7 @@ Returns the public file URL.
   "action": "getUrl",
 
   // File key in S3 bucket
-  "fileKey": "xen/<uuid>/headcrab.png" 
+  "fileKey": "xen/<uuid>-headcrab.png" 
 }
 ```
 
@@ -172,7 +172,7 @@ Deletes an uploaded file from S3.
   "controller": "s3/file",
   "action": "delete",
 
-  "fileKey": "xen/<uuid>/headcrab.png" // File key in S3 bucket
+  "fileKey": "xen/<uuid>-headcrab.png" // File key in S3 bucket
 }
 ```
 

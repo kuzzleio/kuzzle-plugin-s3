@@ -114,14 +114,14 @@ describe('S3Plugin', () => {
         .be.calledOnce()
         .be.calledWith('putObject', {
           Bucket: 'half-life',
-          Key: 'xen/0/headcrab.png',
+          Key: 'xen/0-headcrab.png',
           Expires: 3600
         });
       should(s3Plugin._deleteExpiredFile).be.calledOnce();
       should(response).be.eql({
         uploadUrl: 'http://url.s3',
-        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png',
-        fileKey: 'xen/0/headcrab.png',
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
+        fileKey: 'xen/0-headcrab.png',
         ttl: 3600000
       });
     });
@@ -134,16 +134,16 @@ describe('S3Plugin', () => {
         .then(() => {
           should(s3Plugin.context.accessors.sdk.ms.set)
             .be.calledOnce()
-            .be.calledWith('s3Plugin/uploads/xen/0/headcrab.png', 'temporary', { ex: 60.05 });
+            .be.calledWith('s3Plugin/uploads/xen/0-headcrab.png', 'temporary', { ex: 60.05 });
 
           setTimeout(() => {
             should(s3Plugin.context.accessors.sdk.ms.get).be.calledOnce();
             should(deleteObjectMock)
               .be.calledOnce()
-              .be.calledWith({ Bucket: 'half-life', Key: 'xen/0/headcrab.png' });            
+              .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });            
             should(s3Plugin.context.accessors.sdk.ms.del)
               .be.calledOnce()
-              .be.calledWith(['s3Plugin/uploads/xen/0/headcrab.png']);
+              .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
 
             done();
           }, 100);
@@ -176,7 +176,7 @@ describe('S3Plugin', () => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0/headcrab.png'
+            fileKey: 'xen/0-headcrab.png'
           }
         }
       };  
@@ -187,11 +187,11 @@ describe('S3Plugin', () => {
       
       should(s3Plugin.context.accessors.sdk.ms.del)
         .be.calledOnce()
-        .be.calledWith(['s3Plugin/uploads/xen/0/headcrab.png']);
+        .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
       
       should(response).be.eql({
-        fileKey: 'xen/0/headcrab.png',
-        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
+        fileKey: 'xen/0-headcrab.png',
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
       });
     });
 
@@ -209,7 +209,7 @@ describe('S3Plugin', () => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0/headcrab.png'
+            fileKey: 'xen/0-headcrab.png'
           }
         }
       };  
@@ -220,11 +220,11 @@ describe('S3Plugin', () => {
 
       should(headObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0/headcrab.png'});
+        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png'});
 
       should(deleteObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0/headcrab.png'});
+        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png'});
     });
 
     it('throws an error if the file is not found', async () => {
@@ -260,7 +260,7 @@ describe('S3Plugin', () => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0/headcrab.png'
+            fileKey: 'xen/0-headcrab.png'
           }
         }
       };  
@@ -270,7 +270,7 @@ describe('S3Plugin', () => {
       const response = await s3Plugin.fileGetUrl(request);
       
       should(response).be.eql({
-        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0/headcrab.png'
+        fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
       });
     });
 
