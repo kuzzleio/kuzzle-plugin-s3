@@ -106,7 +106,7 @@ describe('S3Plugin', () => {
     });
 
     it('returns a presigned url from aws s3', async () => {
-      s3Plugin._deleteExpiredFile = sinon.stub();
+      s3Plugin._expireFile = sinon.stub();
 
       const response = await s3Plugin.uploadGetUrl(request);
 
@@ -117,7 +117,7 @@ describe('S3Plugin', () => {
           Key: 'xen/0-headcrab.png',
           Expires: 3600
         });
-      should(s3Plugin._deleteExpiredFile).be.calledOnce();
+      should(s3Plugin._expireFile).be.calledOnce();
       should(response).be.eql({
         uploadUrl: 'http://url.s3',
         fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
