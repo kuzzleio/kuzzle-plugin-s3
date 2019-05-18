@@ -19,11 +19,12 @@ Get a Presigned URL:
 {
   "fileKey": "xen/<uuid>-headcrab.png",
   "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
-  "fileUrl": "https://s3.eu-west-3.amazonaws.com/..."
+  "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
+  "ttl": 1200000
 }
 ```
 
-Then send a PUT request to the `uploadUrl` URL with the body set to the file's content.
+Then send a PUT request to the `uploadUrl` URL with the body set to the file's content and a `Content-Type` header corresponding to the file mime type.  
 
 Finally, validate the uploaded file. If not validated in a timely manner (the TTL is configurable), the uploaded file is automatically removed.
 
@@ -101,7 +102,7 @@ File uploaded to the generated URL must be validated with `upload:validate` othe
   // Public file URL after successful upload
   "fileUrl": "https://s3.eu-west-3.amazonaws.com/...", 
   // TTL in ms for the URL validity and before the uploaded file deletion
-  "ttl": 600000 
+  "ttl": 1200000 
 }
 ```
 
@@ -178,9 +179,10 @@ Deletes an uploaded file from S3.
 
 ## Configuration
 
-You need to set your AWS access key: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
+You need to set your AWS access key in the environment: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
+Your access key must have the following rights: `PutObject` and `DeleteObject`.  
 
-In your `kuzzlerc` file, you can change the following configuration variable:
+Then in your `kuzzlerc` file, you can change the following configuration variable:
 
 ```js
 {
@@ -239,21 +241,13 @@ Then you have to allow Cross Origin Request by editing the CORS Configuration:
 
 ## Installation
 
-### Node.js 8 and beyond
+### On an existing Kuzzle stack
 
 Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
 
 Then go to your plugin directory and run the following command `npm install`.
 
 For more information, refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
-
-### Node.js 6
-
-Clone this repository in your `plugins/available` directory and then link it to the `plugins/enabled` directory.  
-
-Then go to your plugin directory and run the following commands: 
- - `npm install`,
- - `npm run es5-compat`.  
 
 ### Local setup
 
