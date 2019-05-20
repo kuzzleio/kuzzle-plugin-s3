@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Kuzzle Plugin S3</title>
+    <script src="https://cdn.jsdelivr.net/npm/kuzzle-sdk/dist/kuzzle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>    
+  </head>
+  <body>
+    <h1>
+      Kuzzle Plugin S3
+    </h1>
+    <form>
+      <img id="uploadedImage" src="" width="125" height="125"/>
+      <input id="uploadInput" type="file" onChange="uploadTempFile()"/>
+      <input id="fileKey" type="hidden"/>      
+      <button onclick="submitFile()">Submit</button>
+    </form>
+    <script type="application/javascript">
+      (async function () {
+        window.kuzzle = new KuzzleSDK.Kuzzle(new KuzzleSDK.WebSocket('localhost'))
+
+        await window.kuzzle.connect()
+      })();
+
+      async function uploadTempFile() {
+        const file = document.getElementById('uploadInput').files[0];
+
+        // Get a Presigned URL
+        const { result } = await window.kuzzle.query({
+            controller: 's3/upload',
+            action: 'getUrl',
+            uploadDir: 'xen',
+            filename: file.name
+          });
+        
+        // Upload the file directly to S3
+        const axiosOptions = {
+          headers: {
+            'Content-Type': file.type
+          }
+        };
+        await axios.put(result.uploadUrl, file, axiosOptions);
+
+        document.getElementById('fileKey').value = result.fileKey;
+        document.getElementById('uploadedImage').src = result.fileUrl;
+      }
+
+      async function submitFile() {
+        const fileKey = document.getElementById('fileKey').value;
+        
+        // Validate the uploaded file
+        const { result } = await window.kuzzle.query({
+          controller: 's3/upload',
+          action: 'validate',
+          fileKey
+        });
+      }
+    </script>
+  </body>
+</html>
