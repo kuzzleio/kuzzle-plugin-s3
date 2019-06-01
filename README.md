@@ -65,7 +65,7 @@ Finally, validate the uploaded file. If not validated in a timely manner (the TT
   });
 ```
 
-You can see a full example here: [test/s3-test.html](test/s3-test.html)
+You can see a full example here: [test/s3-upload-test.html](test/s3-test.html)
 
 ### API
 
