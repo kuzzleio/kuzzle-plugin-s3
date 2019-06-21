@@ -7,10 +7,10 @@ title: getUrl
 # getUrl
 
 Returns a Presigned URL to upload directly to S3.  
-The URL expires after a configurable TTL. (Configurable in the [kuzzlerc file](/official-plugins/s3/essentials/installation/#plugin-configuration))
+The URL expires after a configurable TTL. (Configurable in the [kuzzlerc file](/official-plugins/s3/1/essentials/installation/#plugin-configuration))
 
 ::: info
-File uploaded to the generated URL must be validated with [upload:validate](/official-plugins/s3/controllers/upload/validate) otherwise they will be deleted after the same TTL as for the URL expiration.
+File uploaded to the generated URL must be validated with [upload:validate](/official-plugins/s3/1/controllers/upload/validate) otherwise they will be deleted after the same TTL as for the URL expiration.
 :::
 
 ---
