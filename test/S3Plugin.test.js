@@ -2,10 +2,10 @@ const
   KuzzleErrors = require('kuzzle-common-objects').errors,
   mockrequire = require('mock-require'),
   sinon = require('sinon'),
-  { 
+  {
     BadRequestError,
     NotFoundError,
-    InternalError: KuzzleInternalError 
+    InternalError: KuzzleInternalError
   } = require('kuzzle-common-objects').errors,
   should = require('should');
 
@@ -57,7 +57,7 @@ describe('S3Plugin', () => {
       bucketName: 'half-life',
       uploadDir: 'xen',
       region: 'eu-west-3',
-      signedUrlTTL: 3600 * 1000,
+      signedUrlTTL: '60min',
       redisPrefix: 's3Plugin/uploads'
     };
 
@@ -102,7 +102,7 @@ describe('S3Plugin', () => {
             filename: 'headcrab.png'
           }
         }
-      };  
+      };
     });
 
     it('returns a presigned url from aws s3', async () => {
@@ -140,7 +140,7 @@ describe('S3Plugin', () => {
             should(s3Plugin.context.accessors.sdk.ms.get).be.calledOnce();
             should(deleteObjectMock)
               .be.calledOnce()
-              .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });            
+              .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
             should(s3Plugin.context.accessors.sdk.ms.del)
               .be.calledOnce()
               .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
@@ -167,7 +167,7 @@ describe('S3Plugin', () => {
 
       return should(
         s3Plugin.uploadGetUrl(request)
-      ).be.rejectedWith(KuzzleInternalError);          
+      ).be.rejectedWith(KuzzleInternalError);
     });
   });
 
@@ -179,16 +179,16 @@ describe('S3Plugin', () => {
             fileKey: 'xen/0-headcrab.png'
           }
         }
-      };  
+      };
     });
 
     it('deletes the associated key in Redis', async () => {
       const response = await s3Plugin.uploadValidate(request);
-      
+
       should(s3Plugin.context.accessors.sdk.ms.del)
         .be.calledOnce()
         .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
-      
+
       should(response).be.eql({
         fileKey: 'xen/0-headcrab.png',
         fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
@@ -212,7 +212,7 @@ describe('S3Plugin', () => {
             fileKey: 'xen/0-headcrab.png'
           }
         }
-      };  
+      };
     });
 
     it('delete the file using aws sdk', async () => {
@@ -251,7 +251,7 @@ describe('S3Plugin', () => {
 
       return should(
         s3Plugin.fileDelete(request)
-      ).be.rejectedWith(KuzzleInternalError);          
+      ).be.rejectedWith(KuzzleInternalError);
     });
   });
 
@@ -263,12 +263,12 @@ describe('S3Plugin', () => {
             fileKey: 'xen/0-headcrab.png'
           }
         }
-      };  
+      };
     });
 
     it('returns the file url', async () => {
       const response = await s3Plugin.fileGetUrl(request);
-      
+
       should(response).be.eql({
         fileUrl: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
       });

@@ -20,15 +20,14 @@ You can now restart Kuzzle and check [http://localhost:7512](http://localhost:75
 
 ## Plugin configuration
 
-You need to set your AWS access key in the environment: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
-Your access key must have the following rights: `PutObject` and `DeleteObject`.  
-
-Then in your `kuzzlerc` file, you can change the following configuration variable:
+In your `kuzzlerc` file, you can change the following configuration variable:
 
   - `bucketName`: AWS S3 bucket
   - `region`: AWS S3 region
-  - `signedUrlTTL`: TTL in ms before Presigned URL expire or the uploaded file is deleted
+  - `signedUrlTTL`: TTL in [ms](https://www.npmjs.com/package/ms) format before Presigned URL expire or the uploaded file is deleted
   - `redisPrefix`: Redis key prefix
+  - `vault.accessKeyIdPath`: Path to AWS Access key id in Vault
+  - `vault.secretAccessKeyPath`: Path to AWS secret access key in Vault
 
 ```js
 {
@@ -36,12 +35,42 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
     "s3": {
       "bucketName": "your-s3-bucket",
       "region": "eu-west-3",
-      "signedUrlTTL": 1200000,
-      "redisPrefix": "s3Plugin/uploads"
+      "signedUrlTTL": "20min",
+      "redisPrefix": "s3Plugin/uploads",
+      "vault": {
+        "accessKeyIdPath": "aws.s3.accessKeyId",
+        "secretAccessKeyPath": "aws.s3.secretAccessKey"
+      }
     }
   }
 }
 ```
+
+## Credentials
+
+This plugin needs AWS S3 credentials with the `PutObject` and `DeleteObject` permissions.  
+ 
+Theses credentials can be set in the [Vault](/core/1/guides/essentials/secrets-vault/).  
+
+By default the format is the following:
+```js
+{
+  "aws": {
+    "s3": {
+      "accessKeyId": "accessKeyId",
+      "secretAccessKey": "secretAccessKey"
+    }
+  }
+}
+```
+
+You can change the path of the credentials used by the plugin by changing the `vault.accessKeyIdPath` and `vault.secretAccessKeyPath` values in the configuration.  
+
+If you cannot use the Vault, it's also possible to set the AWS S3 credentials in the following environment variables:
+  - `AWS_ACCESS_KEY_ID`
+  - `AWS_SECRET_ACCESS_KEY`
+
+Environment variable have precedence over the Vault.
 
 ## AWS S3 Bucket configuration
 
