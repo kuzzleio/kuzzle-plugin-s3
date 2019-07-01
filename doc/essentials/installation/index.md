@@ -24,10 +24,10 @@ In your `kuzzlerc` file, you can change the following configuration variable:
 
   - `bucketName`: AWS S3 bucket
   - `region`: AWS S3 region
-  - `signedUrlTTL`: TTL in [ms](https://www.npmjs.com/package/ms) format before Presigned URL expire or the uploaded file is deleted
+  - `signedUrlTTL`: TTL in [ms](https://www.npmjs.com/package/ms) format before the presigned URL expires, or before the uploaded file is deleted
   - `redisPrefix`: Redis key prefix
-  - `vault.accessKeyIdPath`: Path to AWS Access key id in Vault
-  - `vault.secretAccessKeyPath`: Path to AWS secret access key in Vault
+  - `vault.accessKeyIdPath`: Path to the AWS Access key id in the Vault
+  - `vault.secretAccessKeyPath`: Path to the AWS secret access key in the Vault
 
 ```js
 {
@@ -50,7 +50,7 @@ In your `kuzzlerc` file, you can change the following configuration variable:
 
 This plugin needs AWS S3 credentials with the `PutObject` and `DeleteObject` permissions.  
  
-Theses credentials can be set in the [Vault](/core/1/guides/essentials/secrets-vault/).  
+These credentials can be set in the [Vault](/core/1/guides/essentials/secrets-vault/).  
 
 By default the format is the following:
 ```js
