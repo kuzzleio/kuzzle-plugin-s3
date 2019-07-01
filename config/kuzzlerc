@@ -6,8 +6,8 @@
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
       "vault": {
-        "accessKeyIdPath": "toto.s3.accessKeyId",
-        "secretAccessKeyPath": "toto.s3.secretAccessKey"
+        "accessKeyIdPath": "foo.s3.accessKeyId",
+        "secretAccessKeyPath": "foo.s3.secretAccessKey"
       }
     }
   }
