@@ -5,10 +5,12 @@ services:
     image: kuzzleio/plugin-dev:${KUZZLE_DOCKER_TAG:-latest}
     command: /run-dev.sh
     volumes:
-      - "./run-dev.sh:/run-dev.sh"
-      - "./install-plugins.sh:/install-plugins.sh"
-      - "./pm2.json:/config/pm2.json"
-      - "..:/var/app/plugins/enabled/kuzzle-plugin-s3"
+      - "./docker/run-dev.sh:/run-dev.sh"
+      - "./docker/install-plugins.sh:/install-plugins.sh"
+      - "./docker/pm2.json:/config/pm2.json"
+      - "./config:/var/app/config"
+      - "./config/kuzzlerc:/etc/kuzzlerc"
+      - ".:/var/app/plugins/enabled/kuzzle-plugin-s3"
     cap_add:
       - SYS_PTRACE
     ulimits:
@@ -27,6 +29,7 @@ services:
       - kuzzle_services__memoryStorage__node__host=redis
       - NODE_ENV=development
       - DEBUG=kuzzle:plugins
+      - KUZZLE_VAULT_KEY=${KUZZLE_VAULT_KEY}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
