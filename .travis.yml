@@ -1,19 +1,28 @@
-group: edge
+sudo: true
 
-services:
-  - docker
+jobs:
+  include:
+    - stage: Tests
+      name: Unit Tests
+      if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
+      language: node_js
+      node_js: 8
 
-on:
-  branch: master
+      before_install:
+        - sudo sysctl -w vm.max_map_count=262144
+        - sudo sysctl -w fs.inotify.max_user_watches=524288
 
-env:
-  global:
-  - DOCKER_COMPOSE_VERSION=1.21.0
+      script:
+        # Run tests
+        - npm install --unsafe-perm && npm test
 
-before_install:
-  - sudo sysctl -w vm.max_map_count=262144
-  - sudo sysctl -w fs.inotify.max_user_watches=524288
+    - stage: Tests
+      name: Dead link check
+      if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
 
-script:
-  # Run tests
-  - npm install --unsafe-perm && npm test
+      before_script:
+        - npm run doc-prepare
+        - npm run --prefix doc/framework clone-repos
+        - gem install typhoeus
+      script:
+        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix doc/framework dead-links
