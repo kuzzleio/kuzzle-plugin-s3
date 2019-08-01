@@ -3,3 +3,4 @@
 /coverage
 build/
 config/secrets.json
+doc/framework
