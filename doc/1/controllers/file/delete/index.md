@@ -57,5 +57,5 @@ Returns a boolean indicating that the file has been deleted from S3.
 
 ## Possible errors
 
-- [Common errors](/core/1/api/essentials/errors/#common-errors)
-- [NotFoundError](/core/1/api/essentials/errors/#specific-errors)
+- [Common errors](/core/1/api/essentials/errors#common-errors)
+- [NotFoundError](/core/1/api/essentials/errors#specific-errors)
