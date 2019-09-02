@@ -65,4 +65,4 @@ Returns an object with the following properties:
 
 ## Possible errors
 
-- <a href="/core/1/api/essentials/errors/#common-errors">Common errors</a>
+-  [Common errors](/core/1/api/essentials/errors#common-errors)
