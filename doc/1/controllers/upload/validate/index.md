@@ -65,4 +65,4 @@ Returns an object with the following properties:
 
 ## Possible errors
 
--  [Common errors](/core/1/api/essentials/errors#common-errors)
+- [Common errors](/core/1/api/essentials/errors#common-errors)
