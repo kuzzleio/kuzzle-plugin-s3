@@ -12,7 +12,7 @@ jobs:
       name: Unit Tests
       if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
       language: node_js
-      node_js: 8
+      node_js: 6
 
       before_install:
         - sudo sysctl -w vm.max_map_count=262144

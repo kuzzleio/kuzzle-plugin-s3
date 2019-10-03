@@ -2,7 +2,7 @@ version: '3'
 
 services:
   kuzzle:
-    image: kuzzleio/plugin-dev:${KUZZLE_DOCKER_TAG:-latest}
+    image: kuzzleio/plugin-dev:1
     command: /run-dev.sh
     volumes:
       - "./docker/run-dev.sh:/run-dev.sh"
