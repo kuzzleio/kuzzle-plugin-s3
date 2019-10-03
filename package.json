@@ -1,15 +1,13 @@
 {
   "name": "kuzzle-plugin-s3",
   "author": "The Kuzzle Team <support@kuzzle.io>",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/index.js",
   "scripts": {
-    "postinstall": "npm run build",
     "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
     "unit-testing": "./node_modules/.bin/mocha test/",
-    "build": "node bin/build.js",
     "doc-prepare": "cd doc && bash doc.sh prepare",
     "doc-dev": "cd doc && bash doc.sh dev",
     "doc-build": "cd doc && bash doc.sh build",
@@ -45,11 +43,6 @@
     "sinon": "^7.2.3"
   },
   "dependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/plugin-transform-runtime": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/runtime": "^7.4.4",
     "aws-sdk": "^2.434.0",
     "ms": "^2.1.2",
     "passport": "^0.4.0",
