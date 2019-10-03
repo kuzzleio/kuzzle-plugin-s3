@@ -58,7 +58,7 @@ In your `kuzzlerc` file, you can change the following configuration variable:
 
 This plugin needs AWS S3 credentials with the `PutObject` and `DeleteObject` permissions.  
  
-These credentials can be set in the [Vault](/core/1/guides/essentials/secrets-vault/).  
+These credentials can be set in the [Vault](/core/1/guides/essentials/secrets-vault).  
 
 By default the format is the following:
 ```js

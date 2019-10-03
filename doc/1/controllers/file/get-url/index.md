@@ -59,4 +59,4 @@ Returns an object containing the file public URL.
 
 ## Possible errors
 
-- [Common errors](/core/1/api/essentials/errors/#common-errors)
+- [Common errors](/core/1/api/essentials/errors#common-errors)
