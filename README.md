@@ -6,6 +6,13 @@ S3 has a right system to limit who can upload files to buckets.
 
 These URLs must be generated on the server side, this plugin includes among other things the generation of these URLs so that developers can then send their files directly to S3 from a client application.
 
+## Compatibility matrice
+
+| Kuzzle Version | Plugin Version |
+| -------------- | -------------- |
+| 1.x.x          | 1.x.x          | 
+| 2.x.x          | 2.x.x          | 
+
 ## Usage
 
 Get a Presigned URL: 
@@ -267,4 +274,3 @@ docker-compose -f docker/docker-compose.yml up
 ```
 
 Then you can open the file [test/s3-upload-test.html](test/s3-upload-test.html) in your browser.
-
