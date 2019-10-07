@@ -83,7 +83,7 @@ You can see a full example here: [test/s3-upload-test.html](test/s3-upload-test.
 #### *upload:getUrl*
 
 Returns a Presigned URL to upload directly to S3.  
-The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/1/manual-setup/config/))
+The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/2/manual-setup/config/))
 
 File uploaded to the generated URL must be validated with `upload:validate` otherwise they will be deleted after the same TTL as for the URL expiration.
 
@@ -258,7 +258,7 @@ Clone this repository in your `plugins/available` directory and then link it to 
 
 Then go to your plugin directory and run the following command `npm install`.
 
-For more information, refer to the official documentation: https://docs.kuzzle.io/guide/1/essentials/plugins/#installing-a-plugin
+For more information, refer to the official documentation: https://docs.kuzzle.io/guide/2/essentials/plugins/#installing-a-plugin
 
 ### Local setup
 
