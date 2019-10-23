@@ -1,8 +1,6 @@
 {
   "plugins": {
     "s3": {
-      "bucketName": "your-s3-bucket",
-      "region": "eu-west-3",
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
       "vault": {
