@@ -2,7 +2,6 @@
   "plugins": {
     "s3": {
       "signedUrlTTL": "20min",
-      "redisPrefix": "s3Plugin/uploads",
       "vault": {
         "accessKeyIdPath": "foo.s3.accessKeyId",
         "secretAccessKeyPath": "foo.s3.secretAccessKey"
