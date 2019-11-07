@@ -205,7 +205,7 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
       "bucketName": "your-s3-bucket",
       // AWS S3 compatible service endpoint. It must include the protocol and port.
       "endpoint": "https://s3.eu-west-3.amazonaws.com",
-      // AWS S3 client Configuration options to parametrice the S3 plugin
+      // AWS S3 client configuration options.
       "s3ClientOptions": {
         "s3ForcePathStyle": false
       },      
