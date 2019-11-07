@@ -6,7 +6,7 @@ S3 has a right system to limit who can upload files to buckets.
 
 These URLs must be generated on the server side, this plugin includes among other things the generation of these URLs so that developers can then send their files directly to S3 from a client application.
 
-## Compatibility matrice
+## Compatibility matrix
 
 | Kuzzle Version | Plugin Version |
 | -------------- | -------------- |
@@ -193,6 +193,8 @@ Deletes an uploaded file from S3.
 You need to set your AWS access key in the environment: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
 Your access key must have the following rights: `PutObject` and `DeleteObject`.  
 
+
+
 Then in your `kuzzlerc` file, you can change the following configuration variable:
 
 ```js
@@ -201,8 +203,12 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
     "s3": {
       // AWS S3 bucket
       "bucketName": "your-s3-bucket",
-      // AWS S3 region
-      "region": "eu-west-3",
+      // AWS S3 compatible service endpoint. It must include the protocol and port.
+      "endpoint": "https://s3.eu-west-3.amazonaws.com",
+      // AWS S3 client Configuration options to parametrice the S3 plugin
+      "s3ClientOptions": {
+        "s3ForcePathStyle": false
+      },      
       // TTL in ms before Presigned URL expire or the uploaded file is deleted
       "signedUrlTTL": 1200000,
       // Redis key prefix
@@ -212,6 +218,12 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
 }
 ```
 
+In addition to Amazon aws s3, this plugin allows you to use any S3-Api compatible service accesible
+through the [AWS-S3 sdk](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html).
+Any specific [configuration option](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property)
+can be added to the `s3ClientOptions` configuration attribute.
+Please note that the parameters are translated directly,
+so refer to the sdk documentation to available options.
 
 ### AWS S3 Bucket
 
