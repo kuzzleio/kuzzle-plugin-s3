@@ -2,7 +2,10 @@
   "plugins": {
     "s3": {
       "bucketName": "your-s3-bucket",
-      "region": "eu-west-3",
+      "endpoint": "https://s3.eu-west-3.amazonaws.com",
+      "s3ClientOptions": {
+        "s3ForcePathStyle": false
+      },
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
       "vault": {
