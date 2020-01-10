@@ -7,10 +7,10 @@ title: getUrl
 # getUrl
 
 Returns a Presigned URL to upload directly to S3.  
-The URL expires after a configurable TTL. (Configurable in the [kuzzlerc file](/official-plugins/s3/2/essentials/installation#plugin-configuration))
+The URL expires after a configurable TTL. (Configurable in the [kuzzlerc file](/official-plugins/s3/1/essentials/installation#plugin-configuration))
 
 ::: info
-File uploaded to the generated URL must be validated with [upload:validate](/official-plugins/s3/2/controllers/upload/validate) otherwise they will be deleted after the same TTL as for the URL expiration.
+File uploaded to the generated URL must be validated with [upload:validate](/official-plugins/s3/1/controllers/upload/validate) otherwise they will be deleted after the same TTL as for the URL expiration.
 :::
 
 ---
@@ -31,8 +31,8 @@ Method: GET
   "controller": "s3/upload",
   "action": "getUrl",
 
-  "filename": "headcrab.png", 
-  "uploadDir": "xen" 
+  "filename": "headcrab.png",
+  "uploadDir": "xen"
 }
 ```
 
@@ -48,10 +48,11 @@ Method: GET
 ## Response
 
 Returns an object with the following properties:
- - `fileKey`: file key in S3 bucket
- - `uploadUrl`: presigned upload URL
- - `fileUrl`: public file URL after successful upload
- - `ttl`: TTL in ms for the URL validity and before the uploaded file deletion
+
+- `fileKey`: file key in S3 bucket
+- `uploadUrl`: presigned upload URL
+- `fileUrl`: public file URL after successful upload
+- `ttl`: TTL in ms for the URL validity and before the uploaded file deletion
 
 ```js
 {
@@ -61,10 +62,10 @@ Returns an object with the following properties:
   "action": "getUrl",
   "requestId": "<unique request identifier>",
   "result": {
-    "fileKey": "xen/<uuid>-headcrab.png", 
-    "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...", 
-    "fileUrl": "https://s3.eu-west-3.amazonaws.com/...", 
-    "ttl": 1200000 
+    "fileKey": "xen/<uuid>-headcrab.png",
+    "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
+    "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
+    "ttl": 1200000
   }
 }
 ```
