@@ -24,15 +24,18 @@ jobs:
 
     - stage: Tests
       name: Dead link check
+      language: node_js
+      node_js: 12
       if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
 
       before_script:
+        - npm ci
         - npm run doc-prepare
-        - npm run --prefix doc/framework clone-repos
+        - $(npm bin)/kuzdoc iterate-repos:install --repos_path doc/framework/.repos/
+        - $(npm bin)/kuzdoc framework:link -d /official-plugins/s3/2/ -v 2
       script:
         - gem install typhoeus
-        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix doc/framework dead-links
-
+        - cd doc/framework/ && HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/official-plugins/s3/2/
 
     - stage: Deployment Doc Dev
       name: Deploy next-docs.kuzzle.io
@@ -40,6 +43,7 @@ jobs:
       language: node_js
       node_js: 10
       env:
+        - BRANCH=dev
         - NODE_ENV=production
         - S3_BUCKET=docs-next.kuzzle.io
         - CLOUDFRONT_DISTRIBUTION_ID=E2ZCCEK9GRB49U
@@ -53,6 +57,7 @@ jobs:
 
       install:
         - pip install awscli --upgrade --user
+        - npm ci
 
       script:
         - npm run doc-prepare
@@ -86,6 +91,7 @@ jobs:
 
       install:
         - pip install awscli --upgrade --user
+        - npm ci
 
       script:
         - npm run doc-prepare
