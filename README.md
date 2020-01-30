@@ -188,6 +188,20 @@ Deletes an uploaded file from S3.
 }
 ```
 
+#### *file:getFilesKeys*
+
+List the files keys uploaded to an S3 Bucket.
+
+*Request format:*
+
+```javascript
+{
+  // Kuzzle API params
+  "controller": "s3/file",
+  "action": "getFilesKeys",
+}
+```
+
 ## Configuration
 
 You need to set your AWS access key in the environment: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
@@ -282,7 +296,7 @@ You have to provide valid credentials for AWS S3 through the `AWS_ACCESS_KEY_ID`
 export AWS_ACCESS_KEY_ID=your-access-key
 export AWS_SECRET_ACCESS_KEY=your-secret-key
 
-docker-compose -f docker/docker-compose.yml up
+docker-compose -f docker-compose.yml up
 ```
 
 Then you can open the file [test/s3-upload-test.html](test/s3-upload-test.html) in your browser.

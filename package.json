@@ -1,20 +1,20 @@
 {
   "name": "kuzzle-plugin-s3",
   "author": "The Kuzzle Team <support@kuzzle.io>",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
     "unit-testing": "./node_modules/.bin/mocha test/",
-    "doc-prepare": "cd doc && bash doc.sh prepare",
-    "doc-dev": "cd doc && bash doc.sh dev",
-    "doc-build": "cd doc && bash doc.sh build",
-    "doc-upload": "cd doc && bash doc.sh upload",
-    "doc-cloudfront": "cd doc && bash doc.sh cloudfront",
+    "doc-prepare": "kuzdoc framework:install",
+    "doc-dev": "kuzdoc repo:dev -d /official-plugins/s3/2/ -v 2",
+    "doc-build": "kuzdoc repo:build -d /official-plugins/s3/2/ -v 2",
+    "doc-upload": "kuzdoc repo:deploy -d /official-plugins/s3/2/ -v 2",
+    "doc-cloudfront": "kuzdoc repo:cloudfront -d /official-plugins/s3/2/",
     "doc-deploy": "npm run doc-upload && npm run doc-cloudfront",
-    "doc-netlify": "npm run doc-prepare && cd doc && bash doc.sh build-netlify"
+    "doc-netlify": "npm run doc-prepare && kuzdoc repo:build -d / -v 2"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
   "dependencies": {
     "aws-sdk": "^2.434.0",
     "ms": "^2.1.2",
+    "kuzdoc": "^1.2.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "semver": "^6.0.0",

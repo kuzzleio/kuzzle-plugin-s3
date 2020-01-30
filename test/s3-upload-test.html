@@ -13,9 +13,11 @@
     <form>
       <img id="uploadedImage" src="" width="125" height="125"/>
       <input id="uploadInput" type="file" onChange="uploadTempFile()"/>
-      <input id="fileKey" type="hidden"/>      
+      <input id="fileKey" type="hidden"/>
       <button onclick="submitFile()">Submit</button>
     </form>
+    <button onclick="listFiles()">ListFiles</button>
+    <pre id="filesKeys">List of files keys</pre>  
     <script type="application/javascript">
       (async function () {
         window.kuzzle = new KuzzleSDK.Kuzzle(new KuzzleSDK.WebSocket('localhost'))
@@ -55,6 +57,16 @@
           action: 'validate',
           fileKey
         });
+      }
+
+      async function listFiles() {
+        // Get a Presigned URL
+        const  {result } = await window.kuzzle.query({
+            controller: 's3/file',
+            action: 'getFilesKeys'
+          });
+        document.getElementById('filesKeys').innerHTML = JSON.stringify(result, undefined, 2);;
+    
       }
     </script>
   </body>
