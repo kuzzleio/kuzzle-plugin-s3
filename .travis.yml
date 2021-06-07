@@ -27,7 +27,8 @@ jobs:
         type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/
         OR type = cron
       before_script:
-        - npm ci
+        - npm ci --production=false
+        - npm i --save-dev kuzdoc
         - npm run doc-prepare
         - "$(npm bin)/kuzdoc iterate-repos:install --repos_path doc/framework/.repos/"
         - "$(npm bin)/kuzdoc framework:link -d /official-plugins/s3/2/ -v 2"
@@ -52,7 +53,8 @@ jobs:
             - python-pip
       install:
         - pip install awscli --upgrade --user
-        - npm ci
+        - npm ci --production=false
+        - npm i --save-dev kuzdoc
       script:
         - npm run doc-prepare
         - npm run doc-build
@@ -82,7 +84,8 @@ jobs:
             - python-pip
       install:
         - pip install awscli --upgrade --user
-        - npm ci
+        - npm ci --production=false
+        - npm i --save-dev kuzdoc
       script:
         - npm run doc-prepare
         - npm run doc-build
