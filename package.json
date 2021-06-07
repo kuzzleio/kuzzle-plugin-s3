@@ -34,6 +34,7 @@
   "homepage": "https://github.com/kuzzleio/kuzzle-plugin-s3#readme",
   "devDependencies": {
     "eslint": "^5.13.0",
+    "kuzdoc": "^1.4.5",
     "kuzzle-common-objects": "^3.0.13",
     "mocha": "^5.2.0",
     "mock-require": "^3.0.3",
@@ -45,7 +46,6 @@
   "dependencies": {
     "aws-sdk": "^2.434.0",
     "ms": "^2.1.2",
-    "kuzdoc": "^1.2.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "semver": "^6.0.0",
