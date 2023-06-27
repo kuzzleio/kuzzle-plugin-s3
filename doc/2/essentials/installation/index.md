@@ -31,9 +31,9 @@ You can now restart Kuzzle and check [http://localhost:7512](http://localhost:75
 In your `kuzzlerc` file, you can change the following configuration variable:
 
   - `bucketName`: AWS S3 bucket
-  - `region`: AWS S3 region
   - `endpoint`: AWS S3 compatible service endpoint. It must include the protocol and port.
   - `s3ClientOptions`: AWS S3 client [configuration options](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property).
+  - `region`: AWS S3 region (has to be inside `s3ClientOptions`)
   - `signedUrlTTL`: TTL in [ms](https://www.npmjs.com/package/ms) format before the presigned URL expires, or before the uploaded file is deleted
   - `redisPrefix`: Redis key prefix
   - `vault.accessKeyIdPath`: Path to the AWS Access key id in the Vault
@@ -47,8 +47,8 @@ In your `kuzzlerc` file, you can change the following configuration variable:
       "endpoint": "https://s3.eu-west-3.amazonaws.com",
       "s3ClientOptions": {
         "s3ForcePathStyle": false
+        "region": "eu-west-3",
       },      
-      "region": "eu-west-3",
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
       "vault": {
