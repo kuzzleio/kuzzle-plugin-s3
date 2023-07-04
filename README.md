@@ -231,6 +231,15 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
   }
 }
 ```
+If needed, you can override `bucketName` by adding `bucketName` arg to the request:
+```javascript
+{
+  // Kuzzle API params
+  "controller": "s3/file",
+  "action": "getFilesKeys",
+  "bucketName": "your-other-bucket-name"
+}
+```
 
 In addition to Amazon aws s3, this plugin allows you to use any S3-Api compatible service accesible
 through the [AWS-S3 sdk](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html).
@@ -238,6 +247,7 @@ Any specific [configuration option](https://docs.aws.amazon.com/AWSJavaScriptSDK
 can be added to the `s3ClientOptions` configuration attribute.
 Please note that the parameters are translated directly,
 so refer to the sdk documentation to available options.
+
 
 ### AWS S3 Bucket
 
