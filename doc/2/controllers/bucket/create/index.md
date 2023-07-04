@@ -25,6 +25,7 @@ Body:
         "bucketOptions":{ <OptionsList> },
         "bucketPolicy":{ <PolicyList> },
         "bucketCORS":{ <CORS> }
+        "disableDotsInName":"false"
       }
 ```
 
@@ -41,6 +42,7 @@ Body:
       "bucketOptions": { <OptionsList> },
       "bucketPolicy":{ <PolicyList> },
       "bucketCORS":{ <CORS> }
+      "disableDotsInName":"false"
   }
 }
 ```
@@ -67,6 +69,8 @@ Body:
         AllowedOrigins: ['*'],
       }
 ```
+
+- `disableDotsInName` (optional): changes the name checks on the `bucketName` variable to check for dots, which would prevent [S3 Transfer Acceleration](https://aws.amazon.com/fr/s3/transfer-acceleration/) from working.
 
 ## Response
 
