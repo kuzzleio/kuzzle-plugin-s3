@@ -13,15 +13,13 @@ Creates a S3 bucket
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/create
+URL: http://kuzzle:7512/_plugin/s3/bucket/:bucketName/:bucketRegion
 Method: POST
 Body:
 ```
 
 ```js
       {
-        "bucketName":"<bucketname>",
-        "bucketRegion":"<bucketregion>",
         "bucketOptions":{ <OptionsList> },
         "bucketPolicy":{ <PolicyList> },
         "bucketCORS":{ <CORS> }
@@ -35,14 +33,13 @@ Body:
 {
   "controller": "s3",
   "action": "create",
-
+  "bucketName": "<bucketname>",
+  "bucketRegion": "<bucketRegion>",
   "body": {
-      "bucketName": "<expression>",
-      "bucketRegion": "<number_of_result_max>",
       "bucketOptions": { <OptionsList> },
       "bucketPolicy":{ <PolicyList> },
       "bucketCORS":{ <CORS> }
-      "disableDotsInName":"false"
+      "disableDotsInName": false 
   }
 }
 ```
@@ -82,10 +79,12 @@ Returns an object with the following properties:
       "error": null,
       "action": "create",
       "controller": "s3/bucket",
-      "bucketName: "<bucketname>",
-      "bucketRegion":"<bucketregion>",
-      "bucketOptions": { <OptionsList> },
-      "bucketPolicy":{ <PolicyList> },
-      "bucketCORS": { <CORS> }
+      "result": {
+        "bucketName: "<bucketname>",
+        "bucketRegion":"<bucketregion>",
+        "bucketOptions": { <OptionsList> },
+        "bucketPolicy":{ <PolicyList> },
+        "bucketCORS": { <CORS> }
+      }
 }
 ```

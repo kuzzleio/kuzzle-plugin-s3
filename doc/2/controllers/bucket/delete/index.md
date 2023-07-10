@@ -13,7 +13,7 @@ Deletes an existing empty S3 bucket
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/delete/<bucketName>
+URL: http://kuzzle:7512/_plugin/s3/bucket/delete/<bucketName>/<bucketRegion>
 Method: DELETE
 ```
 
@@ -24,13 +24,14 @@ Method: DELETE
   "controller": "s3",
   "action": "delete",
   "bucketName": "mybucket"
-
+  "bucketRegion": "eu-west-3"
 }
 ```
 
 ## Arguments
 
 - `bucketName`: the name of the bucket to delete
+- `bucketRegion`: the AWS region where the bucket is located
 
 ## Response
 
