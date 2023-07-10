@@ -1,20 +1,20 @@
 ---
 code: true
 type: page
-title: create
+title: exists
 ---
 
-# delete
+# exists
 
-Deletes an existing empty S3 bucket
+Check if a S3 bucket exists.
 
 ## Query Syntax
 
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/<bucketName>/<bucketRegion>
-Method: DELETE
+URL: http://kuzzle:7512/_plugin/s3/bucket/exists/<bucketName>
+Method: GET
 ```
 
 ### Other protocols 
@@ -22,9 +22,9 @@ Method: DELETE
 ```js
 {
   "controller": "s3",
-  "action": "delete",
-  "bucketName": "mybucket"
-  "bucketRegion": "eu-west-3"
+  "action": "exists",
+  "bucketName": "mybucket",
+  "bucketRegion": "eu-east-1"
 }
 ```
 
@@ -41,10 +41,10 @@ Returns an object with the following properties:
 {
   "status": 200,
   "error": null,
-  "action": "delete",
+  "action": "exists",
   "controller": "s3/bucket",
   "result": {
-    "result": "ok"
+    "result": "true"
   }
 }
 ```
