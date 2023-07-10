@@ -42,7 +42,7 @@ Method: GET
 
 - `filename`: Uploaded file name
 - `uploadDir`: Upload directory (see [s3 file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys))
-
+- `bucketName` : Override config bucketName
 ---
 
 ## Response
