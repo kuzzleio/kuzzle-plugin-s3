@@ -27,6 +27,11 @@ describe('S3Plugin', () => {
     uuidMock,
     context,
     config,
+    createBucket,
+    deleteBucket,
+    headBucket,
+    configUpdate,
+    putBucketCors,
     deleteObjectMock,
     headObjectMock,
     getSignedUrlStub,
@@ -44,14 +49,28 @@ describe('S3Plugin', () => {
     deleteObjectMock = sinon.stub().returns(s3Resolve());
     headObjectMock = sinon.stub().returns(s3Resolve());
     listObjectsV2Mock = sinon.stub().returns(s3Resolve());
-   
+    createBucket = sinon.stub().returns(s3Resolve());
+    putBucketCors = sinon.stub().returns(s3Resolve());
+    putBucketPolicies = sinon.stub().returns(s3Resolve());
+    headBucket = sinon.stub().returns(s3Reject({code: 'NotFound' }));
+    listObjectsV2Mock = sinon.stub().returns(s3Resolve());
+    configUpdate = sinon.stub().returns(s3Resolve());
 
     S3Mock.prototype.getSignedUrl = getSignedUrlStub;
     S3Mock.prototype.deleteObject = deleteObjectMock;
     S3Mock.prototype.headObject = headObjectMock;
     S3Mock.prototype.listObjectsV2 = listObjectsV2Mock;
+    S3Mock.prototype.headBucket = headBucket;
+    S3Mock.prototype.createBucket = createBucket;
+    S3Mock.prototype.deleteBucket = deleteBucket;
+    S3Mock.prototype.putBucketCors = putBucketCors;
+    S3Mock.prototype.putBucketPolicies = putBucketPolicies;
+    S3Mock.prototype.update = configUpdate;
 
     awsSdkMock = {
+      config: {
+        update : () => configUpdate
+      },
       S3: S3Mock
     };
 
@@ -493,5 +512,57 @@ describe('S3Plugin', () => {
       );
     });
 
+  });
+
+  describe('#createBucket', async () => {
+
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            bucketName : 'full-life',
+          },
+          body : {}
+        }
+      };
+    });
+
+    it('create a bucket', async () => {
+      const response = await s3Plugin.bucketCreate(request)
+      should(response).be.eql({ 
+        name: 'full-life', 
+        region: 'eu-west-3', 
+        options: {
+          ACL: 'public-read'
+        }, 
+        CORS: {
+          CORSRules : [ 
+            {
+              AllowedHeaders: ['*'],
+              AllowedMethods: ['GET', 'POST', 'PUT'],
+              AllowedOrigins: ['*'],
+            }
+          ]
+        }, 
+        Policy: undefined
+      });
+    });
+
+    it('throws an error if bucket name contains invalid characters', () => {
+      request.input.args.bucketName = 'full_life';
+
+      return should(s3Plugin.bucketCreate(request)).be.rejectedWith(
+        BadRequestError
+      );
+    });
+
+    it('throws an error if bucket name contains dots and disableDotsInName', () => {
+      request.input.args.bucketName = 'full.life';
+      request.input.body.disableDotsInName = true;
+  
+      return should(s3Plugin.bucketCreate(request)).be.rejectedWith(
+        BadRequestError
+      );
+    });
   });
 });
