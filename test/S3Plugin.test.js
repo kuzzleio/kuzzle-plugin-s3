@@ -177,6 +177,29 @@ describe('S3Plugin', () => {
         KuzzleInternalError
       );
     });
+
+    it('override bucket name if bucketName is set in request args', async () => {
+      request.input.args.bucketName = 'full-life'
+      s3Plugin._expireFile = sinon.stub();
+
+      const response = await s3Plugin.uploadGetUrl(request);
+
+      should(getSignedUrlStub)
+        .be.calledOnce()
+        .be.calledWith('putObject', {
+          Bucket: 'full-life',
+          Key: 'xen/0-headcrab.png',
+          Expires: 3600
+        });
+      should(s3Plugin._expireFile).be.calledOnce();
+      should(response).be.eql({
+        uploadUrl: 'http://url.s3',
+        fileUrl:
+          'https://s3.eu-west-3.amazonaws.com/full-life/xen/0-headcrab.png',
+        fileKey: 'xen/0-headcrab.png',
+        ttl: 3600000
+      });
+    })
   });
 
   describe('#uploadValidate', () => {
@@ -236,6 +259,20 @@ describe('S3Plugin', () => {
         .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
     });
 
+    it('override bucket name if bucketName is set in request args', async () => {
+      request.input.args.bucketName = 'full-life'
+
+      await s3Plugin.fileDelete(request);
+
+      should(headObjectMock)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life', Key: 'xen/0-headcrab.png' });
+
+      should(deleteObjectMock)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life', Key: 'xen/0-headcrab.png' });
+    })
+
     it('throws an error if the file is not found', async () => {
       headObjectMock.returns(s3Reject({ code: 'NotFound' }));
 
@@ -283,6 +320,16 @@ describe('S3Plugin', () => {
           'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
       });
     });
+    
+    it('override bucket name if bucketName is set in request args', async () => {
+      request.input.args.bucketName = 'full-life'
+      const response = await s3Plugin.fileGetUrl(request);
+
+      should(response).be.eql({
+        fileUrl:
+          'https://s3.eu-west-3.amazonaws.com/full-life/xen/0-headcrab.png'
+      });
+    })
 
     it('throws an error if "fileKey" param is not present', async () => {
       delete request.input.args.fileKey;
@@ -291,11 +338,19 @@ describe('S3Plugin', () => {
         BadRequestError
       );
     });
+
   });
 
   describe('#getFilesKeys', () => {
-  
-    it('returns the list of files keys of the bucket', async () => {
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {}
+        }
+      };
+    });
+
+    it('returns the list of files keys of the bucket from config', async () => {
       listObjectsV2Mock.returns(s3Resolve(
         {
           Contents: [
@@ -330,7 +385,8 @@ describe('S3Plugin', () => {
       ));
 
 
-      const response =  await s3Plugin.getFilesKeys();
+      const response =  await s3Plugin.getFilesKeys(request);
+
       should(listObjectsV2Mock)
         .be.calledOnce()
         .be.calledWith({
@@ -352,6 +408,78 @@ describe('S3Plugin', () => {
             },
             {
               Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-Nihilanth.png',
+              LastModified: '2019-12-17T14:06:02.532Z',
+              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+              Size: 20913,
+              StorageClass: 'STANDARD',
+              Owner: {
+                DisplayName: '',
+                ID: ''
+              }
+            }]
+        }
+      );
+    });
+
+    it('returns the list of files keys of the selected bucket', async () => {
+      request.input.args.bucketName = 'full-life'
+      listObjectsV2Mock.returns(s3Resolve(
+        {
+          Contents: [
+            {
+              Key: 'xen/0-headcrab.png',
+              LastModified: '2019-12-13T23:18:10.593Z',
+              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+              Size: 9163,
+              StorageClass: 'STANDARD',
+              Owner: {
+                DisplayName: '',
+                ID: ''
+              }
+            },
+            {
+              Key: 'xen/0-Nihilanth.png',
+              LastModified: '2019-12-17T14:06:02.532Z',
+              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+              Size: 20913,
+              StorageClass: 'STANDARD',
+              Owner: {
+                DisplayName: '',
+                ID: ''
+              }
+            }],
+          IsTruncated: false, 
+          KeyCount: 2, 
+          MaxKeys: 2, 
+          Name: 'full-life',  
+          Prefix: ''
+        }
+      ));
+
+
+      const response =  await s3Plugin.getFilesKeys(request);
+      
+      should(listObjectsV2Mock)
+        .be.calledOnce()
+        .be.calledWith({
+          Bucket: 'full-life'
+        });
+      should(response).be.eql(        
+        {
+          filesKeys: [
+            {
+              Key: 'https://s3.eu-west-3.amazonaws.com/full-life/xen/0-headcrab.png',
+              LastModified: '2019-12-13T23:18:10.593Z',
+              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+              Size: 9163,
+              StorageClass: 'STANDARD',
+              Owner: {
+                DisplayName: '',
+                ID: ''
+              }
+            },
+            {
+              Key: 'https://s3.eu-west-3.amazonaws.com/full-life/xen/0-Nihilanth.png',
               LastModified: '2019-12-17T14:06:02.532Z',
               ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
               Size: 20913,
