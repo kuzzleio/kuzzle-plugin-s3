@@ -31,7 +31,9 @@ You can now restart Kuzzle and check [http://localhost:7512](http://localhost:75
 In your `kuzzlerc` file, you can change the following configuration variable:
 
   - `bucketName`: AWS S3 bucket
-  - `region`: AWS S3 region
+  - `endpoint`: AWS S3 compatible service endpoint. It must include the protocol and port.
+  - `s3ClientOptions`: AWS S3 client [configuration options](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property).
+  - `region`: AWS S3 region (has to be inside `s3ClientOptions`)
   - `signedUrlTTL`: TTL in [ms](https://www.npmjs.com/package/ms) format before the presigned URL expires, or before the uploaded file is deleted
   - `redisPrefix`: Redis key prefix
   - `vault.accessKeyIdPath`: Path to the AWS Access key id in the Vault
@@ -42,7 +44,11 @@ In your `kuzzlerc` file, you can change the following configuration variable:
   "plugins": {
     "s3": {
       "bucketName": "your-s3-bucket",
-      "region": "eu-west-3",
+      "endpoint": "https://s3.eu-west-3.amazonaws.com",
+      "s3ClientOptions": {
+        "s3ForcePathStyle": false
+        "region": "eu-west-3",
+      },      
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
       "vault": {
@@ -52,6 +58,40 @@ In your `kuzzlerc` file, you can change the following configuration variable:
     }
   }
 }
+```
+
+### Usage with a S3 compatible API
+
+## Use a custom Minio endpoint
+
+_This works with a Minio endpoint but it will work with any S3 compatible provider_
+
+Set the `plugins.s3.endpoint` configuration key to your Minio URL.
+
+Set `plugins.s3.s3ClientOptions.s3ForcePathStyle` to `false`.
+
+_**Example:** kuzzlerc file_
+
+```js
+{
+  "plugins": {
+    "s3": {
+      "bucketName": "your-bucket-name",
+      "endpoint": "https://minio.local",
+      "s3ClientOptions": {
+        "s3ForcePathStyle": false
+      },      
+    }
+  }
+}
+```
+
+_**Example:** Framework config object_
+
+```js
+app.config.set('plugins.s3.bucketName', 'your-bucket-name');
+app.config.set('plugins.s3.endpoint', 'https://minio.local');
+app.config.set('plugins.s3.s3ClientOptions.s3ForcePathStyle', false);
 ```
 
 ## Credentials

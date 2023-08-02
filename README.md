@@ -207,8 +207,6 @@ List the files keys uploaded to an S3 Bucket.
 You need to set your AWS access key in the environment: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
 Your access key must have the following rights: `PutObject` and `DeleteObject`.  
 
-
-
 Then in your `kuzzlerc` file, you can change the following configuration variable:
 
 ```js
