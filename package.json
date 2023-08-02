@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/kuzzleio/kuzzle-plugin-s3#readme",
   "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^5.13.0",
     "kuzdoc": "^1.4.5",
     "kuzzle-common-objects": "^3.0.13",
@@ -44,10 +45,18 @@
     "sinon": "^7.2.3"
   },
   "dependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@commitlint/config-conventional": "^17.6.6",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/release-notes-generator": "^11.0.1",
     "aws-sdk": "^2.434.0",
     "ms": "^2.1.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "semantic-release-config-kuzzle": "^1.0.0",
+    "semantic-release-slack-bot": "^4.0.2",
     "semver": "^6.0.0",
     "uuid": "^3.3.2"
   }
