@@ -1,12 +1,12 @@
-const KuzzleErrors = require('kuzzle-common-objects').errors,
-  mockrequire = require('mock-require'),
-  sinon = require('sinon'),
+const KuzzleErrors = require("kuzzle-common-objects"),
+  mockrequire = require("mock-require"),
+  sinon = require("sinon"),
   {
     BadRequestError,
     NotFoundError,
-    InternalError: KuzzleInternalError
-  } = require('kuzzle-common-objects').errors,
-  should = require('should');
+    InternalError: KuzzleInternalError,
+  } = require("kuzzle-common-objects"),
+  should = require("should");
 
 class S3Mock {
   constructor(config) {
@@ -22,7 +22,7 @@ function s3Reject(rejectArg) {
   return { promise: () => Promise.reject(rejectArg) };
 }
 
-describe('S3Plugin', () => {
+describe("S3Plugin", () => {
   let uuidCount,
     uuidMock,
     context,
@@ -37,14 +37,13 @@ describe('S3Plugin', () => {
     request;
 
   beforeEach(() => {
-    process.env.AWS_ACCESS_KEY_ID = 'aws access key id';
-    process.env.AWS_SECRET_ACCESS_KEY = 'aws access secret key';
+    process.env.AWS_ACCESS_KEY_ID = "aws access key id";
+    process.env.AWS_SECRET_ACCESS_KEY = "aws access secret key";
 
-    getSignedUrlStub = sinon.stub().returns('http://url.s3');    
+    getSignedUrlStub = sinon.stub().returns("http://url.s3");
     deleteObjectMock = sinon.stub().returns(s3Resolve());
     headObjectMock = sinon.stub().returns(s3Resolve());
     listObjectsV2Mock = sinon.stub().returns(s3Resolve());
-   
 
     S3Mock.prototype.getSignedUrl = getSignedUrlStub;
     S3Mock.prototype.deleteObject = deleteObjectMock;
@@ -52,22 +51,22 @@ describe('S3Plugin', () => {
     S3Mock.prototype.listObjectsV2 = listObjectsV2Mock;
 
     awsSdkMock = {
-      S3: S3Mock
+      S3: S3Mock,
     };
 
     config = {
-      bucketName: 'half-life',
-      uploadDir: 'xen',
-      region: 'eu-west-3',
-      signedUrlTTL: '60min',
-      redisPrefix: 's3Plugin/uploads'
+      bucketName: "half-life",
+      uploadDir: "xen",
+      region: "eu-west-3",
+      signedUrlTTL: "60min",
+      redisPrefix: "s3Plugin/uploads",
     };
 
     uuidCount = 0;
     uuidMock = () => `${uuidCount++}`;
 
-    mockrequire('aws-sdk', awsSdkMock);
-    mockrequire('uuid/v4', uuidMock);
+    mockrequire("aws-sdk", awsSdkMock);
+    mockrequire("uuid/v4", uuidMock);
 
     context = {
       accessors: {
@@ -75,18 +74,18 @@ describe('S3Plugin', () => {
           ms: {
             get: sinon.stub().resolves(),
             set: sinon.stub().resolves(),
-            del: sinon.stub().resolves()
-          }
-        }
+            del: sinon.stub().resolves(),
+          },
+        },
       },
       errors: KuzzleErrors,
       log: {
         warn: sinon.stub().resolves(),
-        debug: sinon.stub().resolves()
-      }
+        debug: sinon.stub().resolves(),
+      },
     };
 
-    S3Plugin = mockrequire.reRequire('../lib/S3Plugin');
+    S3Plugin = mockrequire.reRequire("../lib/S3Plugin");
     s3Plugin = new S3Plugin();
     s3Plugin.init(config, context);
   });
@@ -95,41 +94,39 @@ describe('S3Plugin', () => {
     mockrequire.stopAll();
   });
 
-  describe('#uploadGetUrl', () => {
+  describe("#uploadGetUrl", () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            uploadDir: 'xen',
-            filename: 'headcrab.png'
-          }
-        }
+            uploadDir: "xen",
+            filename: "headcrab.png",
+          },
+        },
       };
     });
 
-    it('returns a presigned url from aws s3', async () => {
+    it("returns a presigned url from aws s3", async () => {
       s3Plugin._expireFile = sinon.stub();
 
       const response = await s3Plugin.uploadGetUrl(request);
 
-      should(getSignedUrlStub)
-        .be.calledOnce()
-        .be.calledWith('putObject', {
-          Bucket: 'half-life',
-          Key: 'xen/0-headcrab.png',
-          Expires: 3600
-        });
+      should(getSignedUrlStub).be.calledOnce().be.calledWith("putObject", {
+        Bucket: "half-life",
+        Key: "xen/0-headcrab.png",
+        Expires: 3600,
+      });
       should(s3Plugin._expireFile).be.calledOnce();
       should(response).be.eql({
-        uploadUrl: 'http://url.s3',
+        uploadUrl: "http://url.s3",
         fileUrl:
-          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
-        fileKey: 'xen/0-headcrab.png',
-        ttl: 3600000
+          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
+        fileKey: "xen/0-headcrab.png",
+        ttl: 3600000,
       });
     });
 
-    it('set a timeout to delete the file after expiration', done => {
+    it("set a timeout to delete the file after expiration", (done) => {
       s3Plugin.config.signedUrlTTL = 50;
       s3Plugin.context.accessors.sdk.ms.get.resolves(true);
 
@@ -138,36 +135,34 @@ describe('S3Plugin', () => {
         .then(() => {
           should(s3Plugin.context.accessors.sdk.ms.set)
             .be.calledOnce()
-            .be.calledWith('s3Plugin/uploads/xen/0-headcrab.png', 'temporary', {
-              ex: 60.05
+            .be.calledWith("s3Plugin/uploads/xen/0-headcrab.png", "temporary", {
+              ex: 60.05,
             });
 
           setTimeout(() => {
             should(s3Plugin.context.accessors.sdk.ms.get).be.calledOnce();
-            should(deleteObjectMock)
-              .be.calledOnce()
-              .be.calledWith({
-                Bucket: 'half-life',
-                Key: 'xen/0-headcrab.png'
-              });
+            should(deleteObjectMock).be.calledOnce().be.calledWith({
+              Bucket: "half-life",
+              Key: "xen/0-headcrab.png",
+            });
             should(s3Plugin.context.accessors.sdk.ms.del)
               .be.calledOnce()
-              .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
+              .be.calledWith(["s3Plugin/uploads/xen/0-headcrab.png"]);
 
             done();
           }, 100);
         })
-        .catch(error => done(error));
+        .catch((error) => done(error));
     }),
-    it('throws an error if "filename" param is not present', () => {
-      delete request.input.args.filename;
+      it('throws an error if "filename" param is not present', () => {
+        delete request.input.args.filename;
 
-      return should(s3Plugin.uploadGetUrl(request)).be.rejectedWith(
-        BadRequestError
-      );
-    });
+        return should(s3Plugin.uploadGetUrl(request)).be.rejectedWith(
+          BadRequestError
+        );
+      });
 
-    it('throws an error if AWS environment variables are not set', () => {
+    it("throws an error if AWS environment variables are not set", () => {
       delete process.env.AWS_ACCESS_KEY_ID;
       delete process.env.AWS_SECRET_ACCESS_KEY;
       s3Plugin = new S3Plugin();
@@ -179,28 +174,28 @@ describe('S3Plugin', () => {
     });
   });
 
-  describe('#uploadValidate', () => {
+  describe("#uploadValidate", () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0-headcrab.png'
-          }
-        }
+            fileKey: "xen/0-headcrab.png",
+          },
+        },
       };
     });
 
-    it('deletes the associated key in Redis', async () => {
+    it("deletes the associated key in Redis", async () => {
       const response = await s3Plugin.uploadValidate(request);
 
       should(s3Plugin.context.accessors.sdk.ms.del)
         .be.calledOnce()
-        .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
+        .be.calledWith(["s3Plugin/uploads/xen/0-headcrab.png"]);
 
       should(response).be.eql({
-        fileKey: 'xen/0-headcrab.png',
+        fileKey: "xen/0-headcrab.png",
         fileUrl:
-          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
+          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
       });
     });
 
@@ -213,31 +208,31 @@ describe('S3Plugin', () => {
     });
   });
 
-  describe('#fileDelete', () => {
+  describe("#fileDelete", () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0-headcrab.png'
-          }
-        }
+            fileKey: "xen/0-headcrab.png",
+          },
+        },
       };
     });
 
-    it('delete the file using aws sdk', async () => {
+    it("delete the file using aws sdk", async () => {
       await s3Plugin.fileDelete(request);
 
       should(headObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
+        .be.calledWith({ Bucket: "half-life", Key: "xen/0-headcrab.png" });
 
       should(deleteObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
+        .be.calledWith({ Bucket: "half-life", Key: "xen/0-headcrab.png" });
     });
 
-    it('throws an error if the file is not found', async () => {
-      headObjectMock.returns(s3Reject({ code: 'NotFound' }));
+    it("throws an error if the file is not found", async () => {
+      headObjectMock.returns(s3Reject({ code: "NotFound" }));
 
       return should(s3Plugin.fileDelete(request)).be.rejectedWith(
         NotFoundError
@@ -252,7 +247,7 @@ describe('S3Plugin', () => {
       );
     });
 
-    it('throws an error if AWS environment variables are not set', async () => {
+    it("throws an error if AWS environment variables are not set", async () => {
       delete process.env.AWS_ACCESS_KEY_ID;
       delete process.env.AWS_SECRET_ACCESS_KEY;
       s3Plugin = new S3Plugin();
@@ -264,23 +259,23 @@ describe('S3Plugin', () => {
     });
   });
 
-  describe('#fileGetUrl', () => {
+  describe("#fileGetUrl", () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: 'xen/0-headcrab.png'
-          }
-        }
+            fileKey: "xen/0-headcrab.png",
+          },
+        },
       };
     });
 
-    it('returns the file url', async () => {
+    it("returns the file url", async () => {
       const response = await s3Plugin.fileGetUrl(request);
 
       should(response).be.eql({
         fileUrl:
-          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png'
+          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
       });
     });
 
@@ -293,77 +288,72 @@ describe('S3Plugin', () => {
     });
   });
 
-  describe('#getFilesKeys', () => {
-  
-    it('returns the list of files keys of the bucket', async () => {
-      listObjectsV2Mock.returns(s3Resolve(
-        {
+  describe("#getFilesKeys", () => {
+    it("returns the list of files keys of the bucket", async () => {
+      listObjectsV2Mock.returns(
+        s3Resolve({
           Contents: [
             {
-              Key: 'xen/0-headcrab.png',
-              LastModified: '2019-12-13T23:18:10.593Z',
+              Key: "xen/0-headcrab.png",
+              LastModified: "2019-12-13T23:18:10.593Z",
               ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
               Size: 9163,
-              StorageClass: 'STANDARD',
+              StorageClass: "STANDARD",
               Owner: {
-                DisplayName: '',
-                ID: ''
-              }
+                DisplayName: "",
+                ID: "",
+              },
             },
             {
-              Key: 'xen/0-Nihilanth.png',
-              LastModified: '2019-12-17T14:06:02.532Z',
+              Key: "xen/0-Nihilanth.png",
+              LastModified: "2019-12-17T14:06:02.532Z",
               ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
               Size: 20913,
-              StorageClass: 'STANDARD',
+              StorageClass: "STANDARD",
               Owner: {
-                DisplayName: '',
-                ID: ''
-              }
-            }],
-          IsTruncated: false, 
-          KeyCount: 2, 
-          MaxKeys: 2, 
-          Name: 'half-life',  
-          Prefix: ''
-        }
-      ));
-
-
-      const response =  await s3Plugin.getFilesKeys();
-      should(listObjectsV2Mock)
-        .be.calledOnce()
-        .be.calledWith({
-          Bucket: 'half-life'
-        });
-      should(response).be.eql(        
-        {
-          filesKeys: [
-            {
-              Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
-              LastModified: '2019-12-13T23:18:10.593Z',
-              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
-              Size: 9163,
-              StorageClass: 'STANDARD',
-              Owner: {
-                DisplayName: '',
-                ID: ''
-              }
+                DisplayName: "",
+                ID: "",
+              },
             },
-            {
-              Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-Nihilanth.png',
-              LastModified: '2019-12-17T14:06:02.532Z',
-              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
-              Size: 20913,
-              StorageClass: 'STANDARD',
-              Owner: {
-                DisplayName: '',
-                ID: ''
-              }
-            }]
-        }
+          ],
+          IsTruncated: false,
+          KeyCount: 2,
+          MaxKeys: 2,
+          Name: "half-life",
+          Prefix: "",
+        })
       );
-    });
 
+      const response = await s3Plugin.getFilesKeys();
+      should(listObjectsV2Mock).be.calledOnce().be.calledWith({
+        Bucket: "half-life",
+      });
+      should(response).be.eql({
+        filesKeys: [
+          {
+            Key: "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
+            LastModified: "2019-12-13T23:18:10.593Z",
+            ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+            Size: 9163,
+            StorageClass: "STANDARD",
+            Owner: {
+              DisplayName: "",
+              ID: "",
+            },
+          },
+          {
+            Key: "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-Nihilanth.png",
+            LastModified: "2019-12-17T14:06:02.532Z",
+            ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+            Size: 20913,
+            StorageClass: "STANDARD",
+            Owner: {
+              DisplayName: "",
+              ID: "",
+            },
+          },
+        ],
+      });
+    });
   });
 });
