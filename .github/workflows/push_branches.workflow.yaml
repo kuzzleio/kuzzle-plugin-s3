@@ -41,9 +41,8 @@ jobs:
     name: Documentation - Deploy
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
 
       - uses: convictional/trigger-workflow-and-wait@v1.6.3
         with:
