@@ -1,3 +1,11 @@
+## [2.0.3](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.2...v2.0.3) (2023-08-03)
+
+
+### Bug Fixes
+
+* **actions:** documentation workflow typo ([a3d095d](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/a3d095d3cdebe0eaea3f81d795c8652b18306c80))
+* **documentation:** documentation workflow is broken, trying to fix it ([06309e5](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/06309e58ae2ea5e5115ac4ab0d58007ae0b23d0e))
+
 # 1.0.0 (2023-08-03)
 
 
