@@ -33,7 +33,7 @@ Method: GET
 
 ## Arguments
 
-None
+- `bucketName` : Override config bucketName
 
 ---
 
