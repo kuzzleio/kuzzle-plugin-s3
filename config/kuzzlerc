@@ -4,7 +4,8 @@
       "bucketName": "your-s3-bucket",
       "endpoint": "https://s3.eu-west-3.amazonaws.com",
       "s3ClientOptions": {
-        "s3ForcePathStyle": false
+        "s3ForcePathStyle": false,
+        "region" : "eu-west-3"
       },
       "signedUrlTTL": "20min",
       "redisPrefix": "s3Plugin/uploads",
