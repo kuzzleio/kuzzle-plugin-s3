@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.3...v2.0.4) (2024-11-13)
+
+
+### Bug Fixes
+
+* UUID package import ([#29](https://github.com/kuzzleio/kuzzle-plugin-s3/issues/29)) ([f04d4db](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/f04d4db8393078d9f8207dfef2b7eae6bb6a385f))
+
 ## [2.0.4-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.3...v2.0.4-beta.1) (2024-11-13)
 
 
