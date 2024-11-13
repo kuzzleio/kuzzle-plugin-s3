@@ -1,12 +1,12 @@
-const KuzzleErrors = require("kuzzle-common-objects"),
-  mockrequire = require("mock-require"),
-  sinon = require("sinon"),
+const KuzzleErrors = require('kuzzle-common-objects'),
+  mockrequire = require('mock-require'),
+  sinon = require('sinon'),
   {
     BadRequestError,
     NotFoundError,
     InternalError: KuzzleInternalError,
-  } = require("kuzzle-common-objects"),
-  should = require("should");
+  } = require('kuzzle-common-objects'),
+  should = require('should');
 
 class S3Mock {
   constructor(config) {
@@ -22,7 +22,7 @@ function s3Reject(rejectArg) {
   return { promise: () => Promise.reject(rejectArg) };
 }
 
-describe("S3Plugin", () => {
+describe('S3Plugin', () => {
   let uuidCount,
     uuidMock,
     context,
@@ -32,6 +32,7 @@ describe("S3Plugin", () => {
     headBucket,
     configUpdate,
     putBucketCors,
+    putBucketPolicy,
     deleteObjectMock,
     headObjectMock,
     getSignedUrlStub,
@@ -42,17 +43,18 @@ describe("S3Plugin", () => {
     request;
 
   beforeEach(() => {
-    process.env.AWS_ACCESS_KEY_ID = "aws access key id";
-    process.env.AWS_SECRET_ACCESS_KEY = "aws access secret key";
+    process.env.AWS_ACCESS_KEY_ID = 'aws access key id';
+    process.env.AWS_SECRET_ACCESS_KEY = 'aws access secret key';
 
-    getSignedUrlStub = sinon.stub().returns("http://url.s3");
+    getSignedUrlStub = sinon.stub().returns('http://url.s3');
     deleteObjectMock = sinon.stub().returns(s3Resolve());
     headObjectMock = sinon.stub().returns(s3Resolve());
     listObjectsV2Mock = sinon.stub().returns(s3Resolve());
     createBucket = sinon.stub().returns(s3Resolve());
+    deleteBucket = sinon.stub().returns(s3Resolve());
     putBucketCors = sinon.stub().returns(s3Resolve());
-    putBucketPolicies = sinon.stub().returns(s3Resolve());
-    headBucket = sinon.stub().returns(s3Reject({code: 'NotFound' }));
+    putBucketPolicy = sinon.stub().returns(s3Resolve());
+    headBucket = sinon.stub().returns(s3Reject({ code: 'NotFound' }));
     listObjectsV2Mock = sinon.stub().returns(s3Resolve());
     configUpdate = sinon.stub().returns(s3Resolve());
 
@@ -64,22 +66,22 @@ describe("S3Plugin", () => {
     S3Mock.prototype.createBucket = createBucket;
     S3Mock.prototype.deleteBucket = deleteBucket;
     S3Mock.prototype.putBucketCors = putBucketCors;
-    S3Mock.prototype.putBucketPolicies = putBucketPolicies;
+    S3Mock.prototype.putBucketPolicy = putBucketPolicy;
     S3Mock.prototype.update = configUpdate;
 
     awsSdkMock = {
       config: {
-        update : () => configUpdate
+        update: () => configUpdate
       },
       S3: S3Mock
     };
 
     config = {
-      bucketName: "half-life",
-      uploadDir: "xen",
-      region: "eu-west-3",
-      signedUrlTTL: "60min",
-      redisPrefix: "s3Plugin/uploads",
+      bucketName: 'half-life',
+      uploadDir: 'xen',
+      region: 'eu-west-3',
+      signedUrlTTL: '60min',
+      redisPrefix: 's3Plugin/uploads',
     };
 
     uuidCount = 0;
@@ -87,8 +89,8 @@ describe("S3Plugin", () => {
       v4: () => `${uuidCount++}`
     };
 
-    mockrequire("aws-sdk", awsSdkMock);
-    mockrequire("uuid", uuidMock);
+    mockrequire('aws-sdk', awsSdkMock);
+    mockrequire('uuid', uuidMock);
 
     context = {
       accessors: {
@@ -107,7 +109,7 @@ describe("S3Plugin", () => {
       },
     };
 
-    S3Plugin = mockrequire.reRequire("../lib/S3Plugin");
+    S3Plugin = mockrequire.reRequire('../lib/S3Plugin');
     s3Plugin = new S3Plugin();
     s3Plugin.init(config, context);
   });
@@ -116,39 +118,39 @@ describe("S3Plugin", () => {
     mockrequire.stopAll();
   });
 
-  describe("#uploadGetUrl", () => {
+  describe('#uploadGetUrl', () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            uploadDir: "xen",
-            filename: "headcrab.png",
+            uploadDir: 'xen',
+            filename: 'headcrab.png',
           },
         },
       };
     });
 
-    it("returns a presigned url from aws s3", async () => {
+    it('returns a presigned url from aws s3', async () => {
       s3Plugin._expireFile = sinon.stub();
 
       const response = await s3Plugin.uploadGetUrl(request);
 
-      should(getSignedUrlStub).be.calledOnce().be.calledWith("putObject", {
-        Bucket: "half-life",
-        Key: "xen/0-headcrab.png",
+      should(getSignedUrlStub).be.calledOnce().be.calledWith('putObject', {
+        Bucket: 'half-life',
+        Key: 'xen/0-headcrab.png',
         Expires: 3600,
       });
       should(s3Plugin._expireFile).be.calledOnce();
       should(response).be.eql({
-        uploadUrl: "http://url.s3",
+        uploadUrl: 'http://url.s3',
         fileUrl:
-          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
-        fileKey: "xen/0-headcrab.png",
+          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
+        fileKey: 'xen/0-headcrab.png',
         ttl: 3600000,
       });
     });
 
-    it("set a timeout to delete the file after expiration", (done) => {
+    it('set a timeout to delete the file after expiration', (done) => {
       s3Plugin.config.signedUrlTTL = 50;
       s3Plugin.context.accessors.sdk.ms.get.resolves(true);
 
@@ -157,34 +159,35 @@ describe("S3Plugin", () => {
         .then(() => {
           should(s3Plugin.context.accessors.sdk.ms.set)
             .be.calledOnce()
-            .be.calledWith("s3Plugin/uploads/xen/0-headcrab.png", "temporary", {
+            .be.calledWith('s3Plugin/uploads/xen/0-headcrab.png', 'temporary', {
               ex: 60.05,
             });
 
           setTimeout(() => {
             should(s3Plugin.context.accessors.sdk.ms.get).be.calledOnce();
             should(deleteObjectMock).be.calledOnce().be.calledWith({
-              Bucket: "half-life",
-              Key: "xen/0-headcrab.png",
+              Bucket: 'half-life',
+              Key: 'xen/0-headcrab.png',
             });
             should(s3Plugin.context.accessors.sdk.ms.del)
               .be.calledOnce()
-              .be.calledWith(["s3Plugin/uploads/xen/0-headcrab.png"]);
+              .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
 
             done();
           }, 100);
         })
         .catch((error) => done(error));
-    }),
-      it('throws an error if "filename" param is not present', () => {
-        delete request.input.args.filename;
+    });
 
-        return should(s3Plugin.uploadGetUrl(request)).be.rejectedWith(
-          BadRequestError
-        );
-      });
+    it('throws an error if "filename" param is not present', () => {
+      delete request.input.args.filename;
 
-    it("throws an error if AWS environment variables are not set", () => {
+      return should(s3Plugin.uploadGetUrl(request)).be.rejectedWith(
+        BadRequestError
+      );
+    });
+
+    it('throws an error if AWS environment variables are not set', () => {
       delete process.env.AWS_ACCESS_KEY_ID;
       delete process.env.AWS_SECRET_ACCESS_KEY;
       s3Plugin = new S3Plugin();
@@ -196,7 +199,7 @@ describe("S3Plugin", () => {
     });
 
     it('override bucket name if bucketName is set in request args', async () => {
-      request.input.args.bucketName = 'full-life'
+      request.input.args.bucketName = 'full-life';
       s3Plugin._expireFile = sinon.stub();
 
       const response = await s3Plugin.uploadGetUrl(request);
@@ -216,31 +219,31 @@ describe("S3Plugin", () => {
         fileKey: 'xen/0-headcrab.png',
         ttl: 3600000
       });
-    })
+    });
   });
 
-  describe("#uploadValidate", () => {
+  describe('#uploadValidate', () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: "xen/0-headcrab.png",
+            fileKey: 'xen/0-headcrab.png',
           },
         },
       };
     });
 
-    it("deletes the associated key in Redis", async () => {
+    it('deletes the associated key in Redis', async () => {
       const response = await s3Plugin.uploadValidate(request);
 
       should(s3Plugin.context.accessors.sdk.ms.del)
         .be.calledOnce()
-        .be.calledWith(["s3Plugin/uploads/xen/0-headcrab.png"]);
+        .be.calledWith(['s3Plugin/uploads/xen/0-headcrab.png']);
 
       should(response).be.eql({
-        fileKey: "xen/0-headcrab.png",
+        fileKey: 'xen/0-headcrab.png',
         fileUrl:
-          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
+          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
       });
     });
 
@@ -253,31 +256,31 @@ describe("S3Plugin", () => {
     });
   });
 
-  describe("#fileDelete", () => {
+  describe('#fileDelete', () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: "xen/0-headcrab.png",
+            fileKey: 'xen/0-headcrab.png',
           },
         },
       };
     });
 
-    it("delete the file using aws sdk", async () => {
+    it('delete the file using aws sdk', async () => {
       await s3Plugin.fileDelete(request);
 
       should(headObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: "half-life", Key: "xen/0-headcrab.png" });
+        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
 
       should(deleteObjectMock)
         .be.calledOnce()
-        .be.calledWith({ Bucket: "half-life", Key: "xen/0-headcrab.png" });
+        .be.calledWith({ Bucket: 'half-life', Key: 'xen/0-headcrab.png' });
     });
 
     it('override bucket name if bucketName is set in request args', async () => {
-      request.input.args.bucketName = 'full-life'
+      request.input.args.bucketName = 'full-life';
 
       await s3Plugin.fileDelete(request);
 
@@ -288,7 +291,7 @@ describe("S3Plugin", () => {
       should(deleteObjectMock)
         .be.calledOnce()
         .be.calledWith({ Bucket: 'full-life', Key: 'xen/0-headcrab.png' });
-    })
+    });
 
     it('throws an error if the file is not found', async () => {
       headObjectMock.returns(s3Reject({ code: 'NotFound' }));
@@ -306,7 +309,7 @@ describe("S3Plugin", () => {
       );
     });
 
-    it("throws an error if AWS environment variables are not set", async () => {
+    it('throws an error if AWS environment variables are not set', async () => {
       delete process.env.AWS_ACCESS_KEY_ID;
       delete process.env.AWS_SECRET_ACCESS_KEY;
       s3Plugin = new S3Plugin();
@@ -318,35 +321,35 @@ describe("S3Plugin", () => {
     });
   });
 
-  describe("#fileGetUrl", () => {
+  describe('#fileGetUrl', () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
-            fileKey: "xen/0-headcrab.png",
+            fileKey: 'xen/0-headcrab.png',
           },
         },
       };
     });
 
-    it("returns the file url", async () => {
+    it('returns the file url', async () => {
       const response = await s3Plugin.fileGetUrl(request);
 
       should(response).be.eql({
         fileUrl:
-          "https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png",
+          'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
       });
     });
-    
+
     it('override bucket name if bucketName is set in request args', async () => {
-      request.input.args.bucketName = 'full-life'
+      request.input.args.bucketName = 'full-life';
       const response = await s3Plugin.fileGetUrl(request);
 
       should(response).be.eql({
         fileUrl:
           'https://s3.eu-west-3.amazonaws.com/full-life/xen/0-headcrab.png'
       });
-    })
+    });
 
     it('throws an error if "fileKey" param is not present', async () => {
       delete request.input.args.fileKey;
@@ -372,68 +375,73 @@ describe("S3Plugin", () => {
         {
           Contents: [
             {
-              Key: "xen/0-headcrab.png",
-              LastModified: "2019-12-13T23:18:10.593Z",
-              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
-              Size: 9163,
-              StorageClass: "STANDARD",
-              Owner: {
-                DisplayName: "",
-                ID: "",
-              },
-            },
-            {
-              Key: "xen/0-Nihilanth.png",
-              LastModified: "2019-12-17T14:06:02.532Z",
-              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
-              Size: 20913,
-              StorageClass: "STANDARD",
-              Owner: {
-                DisplayName: '',
-                ID: ''
-              }
-            }],
-          IsTruncated: false, 
-          KeyCount: 2, 
-          MaxKeys: 2, 
-          Name: 'half-life',  
-          Prefix: ''
-        }
-      ));
-
-
-      const response =  await s3Plugin.getFilesKeys(request);
-
-      should(listObjectsV2Mock)
-        .be.calledOnce()
-        .be.calledWith({
-          Bucket: 'half-life'
-        });
-      should(response).be.eql(        
-        {
-          filesKeys: [
-            {
-              Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
+              Key: 'xen/0-headcrab.png',
               LastModified: '2019-12-13T23:18:10.593Z',
               ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
               Size: 9163,
               StorageClass: 'STANDARD',
               Owner: {
                 DisplayName: '',
-                ID: ''
-              }
+                ID: '',
+              },
             },
+            {
+              Key: 'xen/0-Nihilanth.png',
+              LastModified: '2019-12-17T14:06:02.532Z',
+              ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+              Size: 20913,
+              StorageClass: 'STANDARD',
+              Owner: {
+                DisplayName: '',
+                ID: '',
+              },
+            }
           ],
           IsTruncated: false,
           KeyCount: 2,
           MaxKeys: 2,
-          Name: "half-life",
-          Prefix: "",
+          Name: 'half-life',
+          Prefix: '',
         })
       );
 
+
+      const response = await s3Plugin.getFilesKeys(request);
+
+      should(listObjectsV2Mock).be.calledOnce().be.calledWith({
+        Bucket: 'half-life',
+      });
+      should(response).be.eql({
+        filesKeys: [
+          {
+            Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
+            LastModified: '2019-12-13T23:18:10.593Z',
+            ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+            Size: 9163,
+            StorageClass: 'STANDARD',
+            Owner: {
+              DisplayName: '',
+              ID: '',
+            },
+          },
+          {
+            Key: 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-Nihilanth.png',
+            LastModified: '2019-12-17T14:06:02.532Z',
+            ETag: '"911c0908dfc8fb66068bd8bb3fd6a142-1"',
+            Size: 20913,
+            StorageClass: 'STANDARD',
+            Owner: {
+              DisplayName: '',
+              ID: '',
+            },
+          },
+        ],
+      });
+
+    });
+
     it('returns the list of files keys of the selected bucket', async () => {
-      request.input.args.bucketName = 'full-life'
+      request.input.args.bucketName = 'full-life';
       listObjectsV2Mock.returns(s3Resolve(
         {
           Contents: [
@@ -459,23 +467,24 @@ describe("S3Plugin", () => {
                 ID: ''
               }
             }],
-          IsTruncated: false, 
-          KeyCount: 2, 
-          MaxKeys: 2, 
-          Name: 'full-life',  
+          IsTruncated: false,
+          KeyCount: 2,
+          MaxKeys: 2,
+          Name: 'full-life',
           Prefix: ''
         }
       ));
 
 
-      const response =  await s3Plugin.getFilesKeys(request);
-      
+      const response = await s3Plugin.getFilesKeys(request);
+
       should(listObjectsV2Mock)
         .be.calledOnce()
         .be.calledWith({
           Bucket: 'full-life'
         });
-      should(response).be.eql(        
+
+      should(response).be.eql(
         {
           filesKeys: [
             {
@@ -512,31 +521,46 @@ describe("S3Plugin", () => {
       request = {
         input: {
           args: {
-            bucketName : 'full-life',
+            bucketName: 'full-life',
           },
-          body : {}
+          body: {}
         }
       };
     });
 
     it('create a bucket', async () => {
-      const response = await s3Plugin.bucketCreate(request)
-      should(response).be.eql({ 
-        name: 'full-life', 
-        region: 'eu-west-3', 
+      createBucket.returns(
+        s3Resolve({
+          $response: {
+            data: {
+              Policy: undefined,
+              Location: 'http://full-life.eu-west-3.s3.amazonaws.com/'
+            }
+          }
+        })
+      );
+
+      const response = await s3Plugin.bucketCreate(request);
+
+      should(response).be.eql({
+        name: 'full-life',
+        region: 'eu-west-3',
         options: {
           ACL: 'public-read'
-        }, 
+        },
         CORS: {
-          CORSRules : [ 
+          CORSRules: [
             {
               AllowedHeaders: ['*'],
               AllowedMethods: ['GET', 'POST', 'PUT'],
               AllowedOrigins: ['*'],
             }
           ]
-        }, 
-        Policy: undefined
+        },
+        createBucketOutput: {
+          Policy: undefined,
+          Location: 'http://full-life.eu-west-3.s3.amazonaws.com/'
+        }
       });
     });
 
@@ -551,10 +575,101 @@ describe("S3Plugin", () => {
     it('throws an error if bucket name contains dots and disableDotsInName', () => {
       request.input.args.bucketName = 'full.life';
       request.input.body.disableDotsInName = true;
-  
+
       return should(s3Plugin.bucketCreate(request)).be.rejectedWith(
         BadRequestError
       );
+    });
+  });
+
+  describe('#bucketExists', () => {
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            bucketName: 'full-life',
+            bucketRegion: 'eu-west-3',
+          },
+        },
+      };
+    });
+
+    it('should return true if the bucket exists', async () => {
+      headBucket.returns(s3Resolve());
+
+      const response = await s3Plugin.bucketExists(request);
+
+      should(response).be.true();
+      should(headBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
+    });
+
+    it('should return false if the bucket does not exist', async () => {
+      headBucket.returns(s3Reject({ code: 'NotFound' }));
+
+      const response = await s3Plugin.bucketExists(request);
+
+      should(response).be.false();
+      should(headBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
+    });
+
+    it('should throw an error for other AWS errors', async () => {
+      headBucket.returns(s3Reject(new Error('AWS error')));
+
+      await should(s3Plugin.bucketExists(request)).be.rejectedWith('AWS error');
+
+      should(headBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
+    });
+  });
+
+  describe('#bucketDelete', () => {
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            bucketName: 'full-life',
+            bucketRegion: 'eu-west-3',
+          },
+        },
+      };
+    });
+
+    it('should delete the bucket and return { result: "ok" }', async () => {
+      deleteBucket.returns(s3Resolve());
+
+      const response = await s3Plugin.bucketDelete(request);
+
+      should(response).be.eql({ result: 'ok' });
+      should(deleteBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
+    });
+
+    it('should throw an error if deleteBucket fails', async () => {
+      deleteBucket.returns(s3Reject(new Error('DeleteBucket failed')));
+
+      await should(s3Plugin.bucketDelete(request)).be.rejectedWith('DeleteBucket failed');
+
+      should(deleteBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
+    });
+
+    it('should use default region if bucketRegion is not provided', async () => {
+      deleteBucket.returns(s3Resolve());
+      delete request.input.args.bucketRegion;
+
+      const response = await s3Plugin.bucketDelete(request);
+
+      should(response).be.eql({ result: 'ok' });
+      should(deleteBucket)
+        .be.calledOnce()
+        .be.calledWith({ Bucket: 'full-life' });
     });
   });
 });
