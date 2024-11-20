@@ -5,7 +5,7 @@
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run --silent lint && jest",
+    "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
     "unit-testing": "jest",
     "doc-prepare": "kuzdoc framework:install",
