@@ -72,7 +72,6 @@ describe('S3Plugin', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
     jest.clearAllTimers();
   });
 
