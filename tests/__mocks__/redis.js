@@ -3,5 +3,5 @@ const redisMock = {
   set: jest.fn(),
   del: jest.fn(),
 };
-  
+
 module.exports = redisMock;
