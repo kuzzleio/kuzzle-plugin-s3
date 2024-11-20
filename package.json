@@ -7,7 +7,7 @@
   "scripts": {
     "test": "npm run --silent lint && jest",
     "lint": "eslint --max-warnings=0 ./lib",
-    "unit-testing": "./node_modules/.bin/mocha test/",
+    "unit-testing": "jest",
     "doc-prepare": "kuzdoc framework:install",
     "doc-dev": "kuzdoc repo:dev -d /official-plugins/s3/2/ -v 2",
     "doc-build": "kuzdoc repo:build -d /official-plugins/s3/2/ -v 2",
