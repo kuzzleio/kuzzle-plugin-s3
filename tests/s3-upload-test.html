@@ -61,7 +61,7 @@
 
       async function listFiles() {
         // Get a Presigned URL
-        const  {result } = await window.kuzzle.query({
+        const  { result } = await window.kuzzle.query({
             controller: 's3/file',
             action: 'getFilesKeys'
           });
