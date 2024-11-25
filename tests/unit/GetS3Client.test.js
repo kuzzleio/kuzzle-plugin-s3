@@ -18,7 +18,7 @@ describe('getS3Client', () => {
     jest.clearAllMocks();
     // eslint-disable-next-line guard-for-in
     for (const key in clients) {
-      delete clients[key]; // Clear cached clients
+      delete clients[key];
     }
   });
   
@@ -26,7 +26,7 @@ describe('getS3Client', () => {
     const mockS3Instance = {};
     require('aws-sdk').S3.mockImplementation(() => mockS3Instance);
     const client = getS3Client('https://custom-endpoint.com');
-    expect(client).toBe(mockS3Instance); // Ensures returned instance matches mock
+    expect(client).toBe(mockS3Instance);
     expect(require('aws-sdk').S3).toHaveBeenCalledWith({ endpoint: 'https://custom-endpoint.com' });
   });
   

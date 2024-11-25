@@ -159,12 +159,7 @@ describe('S3Plugin', () => {
     });
     
     test('#fileDelete handles S3 deletion errors gracefully', async () => {
-      // Mock `headObject` to simulate that the file exists
-      mockS3Client.headObject.mockImplementation(() => ({
-        promise: jest.fn().mockResolvedValue({}),
-      }));
-    
-      // Mock `deleteObject` to throw an error
+
       mockS3Client.deleteObject.mockImplementation(() => ({
         promise: jest.fn().mockRejectedValue(new Error('S3 deletion error')),
       }));
@@ -249,7 +244,7 @@ describe('S3Plugin', () => {
     });
     
     test('#setPolicy throws an error if policy is missing', async () => {
-      request.input.body = {}; // No policy
+      request.input.body = {};
     
       await expect(pluginInstance.api.bucket.actions.setPolicy.handler(request)).rejects.toThrow(
         context.errors.BadRequestError
