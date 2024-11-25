@@ -1,364 +1,270 @@
+const { getS3Client } = require('../../lib/helpers');
 const S3Plugin = require('../../lib/S3Plugin');
-
+const { S3 } = require('../__mocks__/aws-sdk');
+const createContext = require('../__mocks__/context');
 describe('S3Plugin', () => {
-  let pluginInstance, context, request;
-
-  jest.useFakeTimers();
+  let pluginInstance, context, mockS3Client;
 
   beforeEach(() => {
-    jest.clearAllTimers();
-    process.env.AWS_ACCESS_KEY_ID = 'mock-access-key';
-    process.env.AWS_SECRET_ACCESS_KEY = 'mock-secret-key';
+    jest.useFakeTimers();
+    // Create a mock S3 client
+    mockS3Client = new S3();
+    getS3Client.mockReturnValue(mockS3Client);
 
-    jest.spyOn(S3Plugin.prototype, '_loadS3').mockImplementation(() => {
-      pluginInstance.s3 = {
-        getSignedUrl: jest.fn().mockReturnValue('http://url.s3'),
-        deleteObject: jest.fn(() => ({
-          promise: jest.fn().mockResolvedValue({}),
-        })),
-        headObject: jest.fn(() => ({
-          promise: jest.fn().mockResolvedValue({}),
-        })),
-        listObjectsV2: jest.fn(() => ({
-          promise: jest.fn().mockResolvedValue({
-            Contents: [
-              { Key: 'test/0-test.png', LastModified: new Date(), Size: 100 },
-              { Key: 'test/1-test.png', LastModified: new Date(), Size: 200 },
-            ],
-          }),
-        })),
-      };
-    });
+    // Mock the Kuzzle context
+    context = createContext();
 
-    context = {
-      accessors: {
-        sdk: {
-          ms: {
-            get: jest.fn().mockResolvedValue(null),
-            set: jest.fn().mockResolvedValue(),
-            del: jest.fn().mockResolvedValue(),
-          },
-        },
-      },
-      errors: {
-        BadRequestError: class BadRequestError extends Error {},
-        NotFoundError: class NotFoundError extends Error {},
-        InternalError: class InternalError extends Error {},
-      },
-      log: {
-        warn: jest.fn(),
-        debug: jest.fn(),
-      },
-    };
-
+    // Initialize the plugin with the mock context
     pluginInstance = new S3Plugin();
     pluginInstance.init(
       {
         bucketName: 'test-bucket',
         signedUrlTTL: 3600000,
         redisPrefix: 's3Plugin/uploads',
+        endpoints: { 'us-east-1': 'https://mock-endpoint.com' },
       },
       context
     );
-    pluginInstance._expireFile = jest.fn(async (fileKey) => {
-      const redisKey = `${pluginInstance.config.redisPrefix}/${fileKey}`;
-      
-
-      if (await context.accessors.sdk.ms.get(redisKey)) {
-        context.accessors.sdk.ms.del([redisKey]); // Simulate key deletion
-      }
-    });
-    
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    jest.clearAllTimers(); // Clear any pending timers after each test
+    jest.restoreAllMocks(); // Restore all mocks to their original implementation
   });
+  describe('Upload Controller', () => {
+    let request;
 
-  describe('#uploadGetUrl', () => {
     beforeEach(() => {
       request = {
         input: {
           args: {
             filename: 'test-file.png',
             uploadDir: 'test-dir',
+            bucketRegion: 'us-east-1',
+            bucketName: 'test-bucket'
           },
         },
       };
     });
 
-    test('returns a presigned URL from AWS S3', async () => {
-      const filename = 'test-file.png';
-      const uploadDir = 'test-dir';
-      const expectedFileKey = `${uploadDir}/mock-uuid-${filename}`;
+    test('#getUploadUrl returns a presigned URL from AWS S3', async () => {
+      const response = await pluginInstance.api.upload.actions.getUploadUrl.handler(request);
 
-      const response = await pluginInstance.uploadGetUrl(request);
-
-      expect(pluginInstance.s3.getSignedUrl).toHaveBeenCalledWith('putObject', {
-        Bucket: 'test-bucket',
-        Key: expectedFileKey,
-        Expires: 3600,
-      });
-
-      expect(pluginInstance._expireFile).toHaveBeenCalledWith(expectedFileKey);
-
+      expect(getS3Client).toHaveBeenCalledWith('https://mock-endpoint.com');
       expect(response).toEqual({
-        fileKey: expectedFileKey,
+        fileKey: 'test-dir/mock-uuid-test-file.png',
         uploadUrl: 'http://url.s3',
-        fileUrl: `https://s3.eu-west-3.amazonaws.com/test-bucket/${expectedFileKey}`,
+        fileUrl: 'https://mock-endpoint.com/test-bucket/test-dir/mock-uuid-test-file.png',
         ttl: 3600000,
       });
+
+      jest.runAllTimers();
     });
 
-    test('throws an error if filename is not provided', async () => {
+    test('#getUploadUrl constructs fileUrl using the correct region endpoint', async () => {
+      request.input.args.bucketRegion = 'us-west-2';
+      pluginInstance.config.endpoints = {
+        'us-east-1': 'https://east-endpoint.com',
+        'us-west-2': 'https://west-endpoint.com',
+      };
+
+      const response = await pluginInstance.api.upload.actions.getUploadUrl.handler(request);
+
+      expect(response.fileUrl).toBe('https://west-endpoint.com/test-bucket/test-dir/mock-uuid-test-file.png');
+      jest.runAllTimers();
+    });
+
+    test('#getUploadUrl throws an error if filename is not provided', async () => {
       delete request.input.args.filename;
 
-      try {
-        await pluginInstance.uploadGetUrl(request);
-      } catch (err) {
-        expect(err).toBeInstanceOf(context.errors.BadRequestError);
-      }
-    });
-
-    test('throws an error if AWS credentials are missing', async () => {
-      delete process.env.AWS_ACCESS_KEY_ID;
-      delete process.env.AWS_SECRET_ACCESS_KEY;
-
-      pluginInstance = new S3Plugin();
-      pluginInstance.init({}, context);
-
-      try {
-        await pluginInstance.uploadGetUrl(request);
-      } catch (err) {
-        expect(err).toBeInstanceOf(context.errors.InternalError);
-      }
-    });
-
-    test('throws an error if uploadDir is not provided', async () => {
-      delete request.input.args.uploadDir;
-    
-      await expect(pluginInstance.uploadGetUrl(request)).rejects.toThrow(
+      await expect(pluginInstance.api.upload.actions.getUploadUrl.handler(request)).rejects.toThrow(
         context.errors.BadRequestError
       );
     });
-    
+
     test('expireFile deletes file after TTL if not validated', async () => {
-      const fileKey = 'test-file';
-      const redisKey = `s3Plugin/uploads/${fileKey}`;
+      const fileKey = 'mock-uuid-test-file.png';
+      const redisKey = `s3Plugin/uploads/${request.input.args.uploadDir}/${fileKey}`;
       jest.useFakeTimers();
     
       context.accessors.sdk.ms.get.mockResolvedValueOnce('temporary');
     
-      pluginInstance._expireFile(fileKey);
+      pluginInstance.api.upload.actions.getUploadUrl.handler(request);
     
       jest.advanceTimersByTime(pluginInstance.config.signedUrlTTL);
-      // necessary to let redis call to del go
+
+      // let event loop proceed setTimeout 
       jest.useRealTimers();
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       expect(context.accessors.sdk.ms.get).toHaveBeenCalledWith(redisKey);
       expect(context.accessors.sdk.ms.del).toHaveBeenCalledWith([redisKey]);
+    });
+
+    test('#getUploadUrl throws an error if uploadDir is not provided', async () => {
+      delete request.input.args.uploadDir;
+
+      await expect(pluginInstance.api.upload.actions.getUploadUrl.handler(request)).rejects.toThrow(
+        context.errors.BadRequestError
+      );
+    });
+
+    test('#getUploadUrl throws an error if bucketRegion is not provided', async () => {
+      delete request.input.args.bucketRegion;
     
-    });
-    
-     
-  });
-
-  describe('#uploadValidate', () => {
-    beforeEach(() => {
-      request = {
-        input: {
-          args: {
-            fileKey: 'test-dir/mock-uuid-test-file.png',
-          },
-        },
-      };
-    });
-
-    test('deletes the associated key in Redis and clears the timeout', async () => {
-      await pluginInstance.uploadValidate(request);
-
-      expect(context.accessors.sdk.ms.del).toHaveBeenCalledWith([
-        's3Plugin/uploads/test-dir/mock-uuid-test-file.png',
-      ]);
-    });
-
-    test('throws an error if fileKey is not provided', async () => {
-      delete request.input.args.fileKey;
-
-      await expect(pluginInstance.uploadValidate(request)).rejects.toThrow(
+      await expect(pluginInstance.api.upload.actions.getUploadUrl.handler(request)).rejects.toThrow(
         context.errors.BadRequestError
       );
     });
   });
-  
-  describe('#fileGetUrl', () => {
+
+  describe('File Controller', () => {
+    let request;
+
     beforeEach(() => {
       request = {
         input: {
           args: {
             fileKey: 'test-dir/mock-uuid-test-file.png',
+            bucketRegion: 'us-east-1',
           },
         },
       };
     });
-  
-    test('returns the file URL', async () => {
-      const response = await pluginInstance.fileGetUrl(request);
-  
+
+    test('#getUrl returns the file URL', async () => {
+      const response = await pluginInstance.api.file.actions.fileGetUrl.handler(request);
+
       expect(response).toEqual({
-        fileUrl: 'https://s3.eu-west-3.amazonaws.com/test-bucket/test-dir/mock-uuid-test-file.png',
-      });
-    });
-  
-    test('throws an error if "fileKey" is not provided', async () => {
-      delete request.input.args.fileKey;
-  
-      await expect(pluginInstance.fileGetUrl(request)).rejects.toThrow(
-        context.errors.BadRequestError
-      );
-    });
-  });
-
-  describe('#fileDelete', () => {
-    beforeEach(() => {
-      request = {
-        input: {
-          args: {
-            fileKey: 'test-dir/mock-uuid-test-file.png',
-          },
-        },
-      };
-    });
-
-    test('deletes the file from S3', async () => {
-      await pluginInstance.fileDelete(request);
-
-      expect(pluginInstance.s3.headObject).toHaveBeenCalledWith({
-        Bucket: 'test-bucket',
-        Key: 'test-dir/mock-uuid-test-file.png',
-      });
-      expect(pluginInstance.s3.deleteObject).toHaveBeenCalledWith({
-        Bucket: 'test-bucket',
-        Key: 'test-dir/mock-uuid-test-file.png',
+        fileUrl: 'https://mock-endpoint.com/test-bucket/test-dir/mock-uuid-test-file.png',
       });
     });
 
-    test('throws a NotFoundError if the file does not exist', async () => {
-      pluginInstance.s3.headObject.mockImplementation(() => ({
+    test('#delete throws an error if file does not exist', async () => {
+      mockS3Client.headObject.mockImplementation(() => ({
         promise: jest.fn().mockRejectedValue({ code: 'NotFound' }),
       }));
 
-      await expect(pluginInstance.fileDelete(request)).rejects.toThrow(
+      await expect(pluginInstance.api.file.actions.fileDelete.handler(request)).rejects.toThrow(
         context.errors.NotFoundError
       );
     });
 
-    test('throws an error if "fileKey" is not provided', async () => {
+    test('#fileGetUrl throws an error if fileKey is invalid', async () => {
       delete request.input.args.fileKey;
-  
-      await expect(pluginInstance.fileDelete(request)).rejects.toThrow(
+    
+      await expect(pluginInstance.api.file.actions.fileGetUrl.handler(request)).rejects.toThrow(
         context.errors.BadRequestError
       );
     });
-  });
-
-  describe('#getFilesKeys', () => {
-    test('returns the list of file keys from the bucket', async () => {
-      const response = await pluginInstance.getFilesKeys();
-
-      expect(pluginInstance.s3.listObjectsV2).toHaveBeenCalledWith({
-        Bucket: 'test-bucket',
-      });
-
-      expect(response).toEqual({
-        filesKeys: [
-          {
-            Key: 'https://s3.eu-west-3.amazonaws.com/test-bucket/test/0-test.png',
-            LastModified: expect.any(Date),
-            Size: 100,
-          },
-          {
-            Key: 'https://s3.eu-west-3.amazonaws.com/test-bucket/test/1-test.png',
-            LastModified: expect.any(Date),
-            Size: 200,
-          },
-        ],
-      });
-    });
-
-    test('throws an error if S3 API fails', async () => {
-      pluginInstance.s3.listObjectsV2.mockImplementation(() => ({
-        promise: jest.fn().mockRejectedValue(new Error('S3 error')),
-      }));
-
-      await expect(pluginInstance.getFilesKeys()).rejects.toThrow('S3 error');
-    });
-  });
-
-  describe('#init', () => {
-    test('sets up the plugin configuration correctly', () => {
-      const config = { signedUrlTTL: '1h', bucketName: 'test-bucket' };
-      pluginInstance.init(config, context);
-
-      expect(pluginInstance.config.bucketName).toBe('test-bucket');
-      expect(pluginInstance.config.signedUrlTTL).toBe(3600000);
-    });
-
-    test('init handles missing configuration gracefully', () => {
-      const config = {};
-      pluginInstance.init(config, context);
     
-      expect(pluginInstance.config.bucketName).toBe('your-s3-bucket'); // Default value
-    });
-    
-  });
-
-  describe('#_deleteFile', () => {
-    test('calls S3 deleteObject with correct parameters', async () => {
-      await pluginInstance._deleteFile('test-file');
-      expect(pluginInstance.s3.deleteObject).toHaveBeenCalledWith({
-        Bucket: 'test-bucket',
-        Key: 'test-file',
-      });
-    });
-
-    test('deleteFile throws an error if S3 API fails', async () => {
-      pluginInstance.s3.deleteObject.mockImplementation(() => ({
-        promise: jest.fn().mockRejectedValue(new Error('S3 deletion failed')),
+    test('#fileDelete handles S3 deletion errors gracefully', async () => {
+      // Mock `headObject` to simulate that the file exists
+      mockS3Client.headObject.mockImplementation(() => ({
+        promise: jest.fn().mockResolvedValue({}),
       }));
     
-      await expect(pluginInstance._deleteFile('test-file')).rejects.toThrow(
-        'S3 deletion failed'
+      // Mock `deleteObject` to throw an error
+      mockS3Client.deleteObject.mockImplementation(() => ({
+        promise: jest.fn().mockRejectedValue(new Error('S3 deletion error')),
+      }));
+    
+      // Expect the file deletion to throw the mocked error
+      await expect(pluginInstance.api.file.actions.fileDelete.handler(request)).rejects.toThrow(
+        'S3 deletion error'
       );
-    });
+    
+      // Ensure both `headObject` and `deleteObject` were called
+      expect(mockS3Client.headObject).toHaveBeenCalledWith({
+        Bucket: 'test-bucket',
+        Key: 'test-dir/mock-uuid-test-file.png',
+      });
+      expect(mockS3Client.deleteObject).toHaveBeenCalledWith({
+        Bucket: 'test-bucket',
+        Key: 'test-dir/mock-uuid-test-file.png',
+      });
+    });    
     
   });
 
-  describe('#_assertCredentials', () => {
-    test('throws InternalError if AWS credentials are missing', () => {
-      // Create a new plugin instance
-      const unmockedPlugin = new S3Plugin();
-      unmockedPlugin.context = context;
+  describe('Bucket Controller', () => {
+    let request;
   
-      // Manually set `this.s3` to null to simulate missing credentials
-      unmockedPlugin.s3 = null;
-  
-      expect(() => unmockedPlugin._assertCredentials()).toThrow(
-        context.errors.InternalError
-      );
-    });
-
-    test('throws InternalError if credentials in context are invalid', () => {
-      pluginInstance.context.secrets = {
-        aws: { s3: { accessKeyId: null, secretAccessKey: null } },
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            bucketName: 'test-bucket',
+            bucketRegion: 'us-east-1',
+          },
+        },
+        body: {
+          options: {}
+        }
       };
-      pluginInstance.s3 = null;
+  
+      mockS3Client = new S3();
+      getS3Client.mockReturnValue(mockS3Client);
+    });
+  
+    test('#exists verifies the bucket exists', async () => {
+      const response = await pluginInstance.api.bucket.actions.exists.handler(request);
+  
+      expect(response).toEqual({ exists: true });
+      expect(mockS3Client.headBucket).toHaveBeenCalledWith({
+        Bucket: 'test-bucket',
+      });
+    });
+  
+    test('#exists throws an error if the bucket does not exist', async () => {
+      
+      mockS3Client.headBucket.mockImplementationOnce(() => ({
+        promise: jest.fn().mockRejectedValue(new context.errors.NotFoundError),
+      }));
     
-      expect(() => pluginInstance._assertCredentials()).toThrow(
-        context.errors.InternalError
+      await expect(pluginInstance.api.bucket.actions.exists.handler(request))
+        .rejects
+        .toThrow(context.errors.NotFoundError);
+    
+      expect(mockS3Client.headBucket).toHaveBeenCalledWith({ Bucket: 'test-bucket' });
+    });
+
+    test('#create throws an error if bucket already exists', async () => {
+      jest.spyOn(pluginInstance.api.bucket.actions.exists, 'handler').mockResolvedValue(true);
+    
+      await expect(pluginInstance.api.bucket.actions.create.handler(request)).rejects.toThrow(
+        context.errors.BadRequestError
+      );
+    
+    });
+    
+    test('#delete throws an error if S3 fails during bucket deletion', async () => {
+      mockS3Client.deleteBucket.mockImplementationOnce(() => ({
+        promise: jest.fn().mockRejectedValue(new Error('S3 bucket deletion error')),
+      }));
+    
+      await expect(pluginInstance.api.bucket.actions.delete.handler(request)).rejects.toThrow(
+        'S3 bucket deletion error'
       );
     });
     
-  });  
+    test('#setPolicy throws an error if policy is missing', async () => {
+      request.input.body = {}; // No policy
+    
+      await expect(pluginInstance.api.bucket.actions.setPolicy.handler(request)).rejects.toThrow(
+        context.errors.BadRequestError
+      );
+    });
+    
+    test('#enablePublicAccess handles S3 errors gracefully', async () => {
+      mockS3Client.deletePublicAccessBlock.mockImplementationOnce(() => ({
+        promise: jest.fn().mockRejectedValue(new Error('Public access error')),
+      }));
+    
+      await expect(pluginInstance.api.bucket.actions.enablePublicAccess.handler(request)).rejects.toThrow(
+        'Public access error'
+      );
+    });
+    
+  });
 });
