@@ -1,11 +1,6 @@
 const context = jest.fn(() => ({
   accessors: {
     sdk: {
-      ms: {
-        get: jest.fn().mockResolvedValue(null),
-        set: jest.fn().mockResolvedValue(),
-        del: jest.fn().mockResolvedValue(),
-      },
     },
   },
   errors: {

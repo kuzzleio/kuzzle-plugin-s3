@@ -1,18 +1,21 @@
 {
   "plugins": {
     "s3": {
-      "bucketName": "your-s3-bucket",
-      "endpoint": "https://s3.eu-west-3.amazonaws.com",
-      "s3ClientOptions": {
-        "s3ForcePathStyle": false,
-        "region" : "eu-west-3"
+      "endpoints": {
+        "eu-west-3": {
+          "endpoint": "https://s3.eu-west-3.amazonaws.com",
+          "forcePathStyle": false,
+          "accessKeyIdPath": "foo.s3.eu-west-3.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey"
+        },
+        "us-east-1": {
+          "endpoint": "https://s3.us-east-1.amazonaws.com",
+          "forcePathStyle": false,
+          "accessKeyIdPath": "foo.s3.us-east-1.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.us-east-1.secretAccessKey"
+        }
       },
-      "signedUrlTTL": "20min",
-      "redisPrefix": "s3Plugin/uploads",
-      "vault": {
-        "accessKeyIdPath": "foo.s3.accessKeyId",
-        "secretAccessKeyPath": "foo.s3.secretAccessKey"
-      }
+      "signedUrlTTL": "20min"
     }
   }
 }
