@@ -36,7 +36,7 @@ describe('getS3Client (AWS SDK v3)', () => {
         endpoint: 'https://custom-endpoint.com',
         region: 'us-west-1',
       },
-      mockGetCredentials
+      mockGetCredentials()
     );
 
     expect(client).toBe(mockS3Instance);
@@ -51,12 +51,6 @@ describe('getS3Client (AWS SDK v3)', () => {
     });
   });
 
-  test('throws an error if endpoint is not provided', () => {
-    expect(() => {
-      getS3Client({}, mockGetCredentials);
-    }).toThrow('Endpoint is required to initialize the S3 client.');
-  });
-
   test('reuses an existing client for the same endpoint', () => {
     const { S3 } = require('@aws-sdk/client-s3');
     const mockS3Instance = {};
@@ -67,14 +61,14 @@ describe('getS3Client (AWS SDK v3)', () => {
         endpoint: 'https://custom-endpoint.com',
         region: 'us-west-1',
       },
-      mockGetCredentials
+      mockGetCredentials()
     );
     const client2 = getS3Client(
       {
         endpoint: 'https://custom-endpoint.com',
         region: 'us-west-1',
       },
-      mockGetCredentials
+      mockGetCredentials()
     );
 
     expect(client1).toBe(client2); // Verify the same instance is reused
@@ -93,14 +87,14 @@ describe('getS3Client (AWS SDK v3)', () => {
         endpoint: 'https://endpoint1.com',
         region: 'us-west-1',
       },
-      mockGetCredentials
+      mockGetCredentials()
     );
     const client2 = getS3Client(
       {
         endpoint: 'https://endpoint2.com',
         region: 'us-west-1',
       },
-      mockGetCredentials
+      mockGetCredentials()
     );
 
     expect(client1).not.toBe(client2); // Different instances

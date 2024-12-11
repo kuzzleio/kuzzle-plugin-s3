@@ -47,13 +47,16 @@ describe('UploadController', () => {
         error: jest.fn(),
         info: jest.fn(),
       },
-      secrets: {},
+      secrets: {
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey'
+      },
     };
 
     mockConfig = {
       isMinio: false,
       forcePathStyle: true,
-      signedUrlTTL: 60000, // e.g. 1 minute TTL (in ms)
+      signedUrlTTL: 60000,
       endpoints: {
         'us-east-1': {
           endpoint: 'http://localhost:9000',
@@ -64,14 +67,13 @@ describe('UploadController', () => {
       },
     };
 
-    mockS3 = {}; // We don't need actual methods for S3 since getSignedUrl uses the client and command directly.
+    mockS3 = {};
 
     getS3Client.mockReturnValue(mockS3);
     uuid.mockReturnValue('fixed-uuid');
 
     uploadController = new UploadController(mockConfig, mockContext);
 
-    // By default, let's make getProperty just return the requested path if available
     getProperty.mockImplementation((obj, path) => (obj ? obj[path] : undefined));
   });
 

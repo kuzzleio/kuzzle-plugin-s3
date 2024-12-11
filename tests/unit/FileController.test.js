@@ -31,7 +31,10 @@ describe('FileController', () => {
         error: jest.fn(),
         info: jest.fn(),
       },
-      secrets: {},
+      secrets: {
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey'
+      },
     };
 
     mockConfig = {
@@ -130,12 +133,17 @@ describe('FileController', () => {
     test('returns a file URL', () => {
       const request = {
         input: {
-          args: {
+          body: {
             fileKey: 'path/to/file.txt',
+          },
+          args: {
             bucketName: 'my-bucket',
             bucketRegion: 'us-east-1', // Added this line
           },
         },
+        getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
+          return request.input.body[key] || defaultValue;
+        }),
       };
           
 

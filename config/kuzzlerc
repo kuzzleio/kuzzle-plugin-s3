@@ -6,13 +6,15 @@
           "endpoint": "https://s3.eu-west-3.amazonaws.com",
           "forcePathStyle": false,
           "accessKeyIdPath": "foo.s3.eu-west-3.accessKeyId",
-          "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey"
+          "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey",
+          "isMinio": false
         },
         "us-east-1": {
           "endpoint": "https://s3.us-east-1.amazonaws.com",
           "forcePathStyle": false,
           "accessKeyIdPath": "foo.s3.us-east-1.accessKeyId",
-          "secretAccessKeyPath": "foo.s3.us-east-1.secretAccessKey"
+          "secretAccessKeyPath": "foo.s3.us-east-1.secretAccessKey",
+          "isMinio": false
         }
       },
       "signedUrlTTL": "20min"

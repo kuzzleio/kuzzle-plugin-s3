@@ -1,16 +1,12 @@
 const BucketController = require('../../lib/controllers/BucketController');
 
-// Mock the helpers used by BaseController
 jest.mock('../../lib/helpers', () => ({
   getS3Client: jest.fn(),
   getProperty: (obj, path) => {
-    // Simple mock for getProperty. In your real code, you'd parse the path.
-    // For this test, assume path is a direct key lookup.
     return obj ? obj[path] : undefined;
   },
 }));
 
-// We will use these mocks to simulate S3 client behavior
 const mockHeadBucket = jest.fn();
 const mockCreateBucket = jest.fn();
 const mockPutBucketCors = jest.fn();
@@ -43,7 +39,12 @@ describe('BucketController', () => {
         error: jest.fn(),
         info: jest.fn(),
       },
-      secrets: {}, // if needed
+      secrets: {
+        // simplified for tests
+        accessKeyId: 'accessKeyId',
+        secretAccessKey:'secretAccessKey'
+      },
+
     };
 
     mockConfig = {
@@ -95,6 +96,9 @@ describe('BucketController', () => {
           },
         },
       },
+      getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
     };
 
     // Simulate that the bucket does not exist
@@ -135,6 +139,9 @@ describe('BucketController', () => {
           options: { ACL: 'public-read' },
         },
       },
+      getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
     };
 
     // Simulate that the bucket already exists
@@ -159,6 +166,9 @@ describe('BucketController', () => {
           options: { ACL: 'public-read' },
         },
       },
+      getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
     };
 
     // Simulate that the bucket does not exist
