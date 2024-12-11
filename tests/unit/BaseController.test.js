@@ -161,24 +161,4 @@ describe('BaseController', () => {
     });
   });
 
-  describe('_getUrl', () => {
-    test('constructs path-style URL when forcePathStyle = true', () => {
-      // Override config to force path style
-      baseController.config.endpoints['us-east-1'].forcePathStyle = true;
-
-      const url = baseController._getUrl('my-bucket', 'path/to/file.jpg', 'us-east-1');
-      expect(url).toBe('https://s3.us-east-1.amazonaws.com/my-bucket/path/to/file.jpg');
-    });
-
-    test('constructs virtual-hosted style URL when forcePathStyle = false', () => {
-      const url = baseController._getUrl('my-bucket', 'path/to/file.jpg', 'us-east-1');
-      expect(url).toBe('https://my-bucket.s3.us-east-1.amazonaws.com/path/to/file.jpg');
-    });
-
-    test('throws if no endpoint for region', () => {
-      expect(() => {
-        baseController._getUrl('my-bucket', 'file.txt', 'non-existing-region');
-      }).toThrow('No endpoint configured for region: non-existing-region');
-    });
-  });
 });

@@ -106,7 +106,7 @@ describe('S3Plugin - init', () => {
         actions: expect.objectContaining({
           fileGetUrl: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'post', path: '/_file/get-url/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'get', path: '/_file/get-url/:bucketRegion/:bucketName' }],
           }),
         }),
       }),

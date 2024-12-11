@@ -119,7 +119,6 @@ describe('UploadController', () => {
       expect(result).toEqual({
         fileKey: 'my-uploads/fixed-uuid-test-file.txt',
         uploadUrl: 'http://presigned.upload.url',
-        fileUrl: 'http://localhost:9000/my-bucket/my-uploads/fixed-uuid-test-file.txt',
         ttl: mockConfig.signedUrlTTL,
       });
     });
@@ -144,7 +143,6 @@ describe('UploadController', () => {
       const result = await uploadController.getUploadUrl(request);
 
       expect(result.fileKey).toBe('fixed-uuid-test-file.txt');
-      expect(result.fileUrl).toBe('http://localhost:9000/my-bucket/fixed-uuid-test-file.txt');
     });
 
     test('throws error if getSignedUrl fails', async () => {

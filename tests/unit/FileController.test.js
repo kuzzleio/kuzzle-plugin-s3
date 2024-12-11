@@ -6,7 +6,17 @@ jest.mock('../../lib/helpers', () => ({
   listAllObjects: jest.fn(),
 }));
 
+jest.mock('@aws-sdk/s3-request-presigner', () => ({
+  getSignedUrl: jest.fn(),
+}));
+
+jest.mock('@aws-sdk/client-s3', () => ({
+  GetObjectCommand: jest.fn().mockImplementation((params) => params),
+}));
+
 const { getS3Client, listAllObjects, getProperty } = require('../../lib/helpers');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
 
 describe('FileController', () => {
   let fileController;
@@ -19,6 +29,7 @@ describe('FileController', () => {
   beforeEach(() => {
     mockHeadObject.mockReset();
     mockDeleteObject.mockReset();
+    GetObjectCommand.mockReset();
     listAllObjects.mockReset();
 
     mockContext = {
@@ -130,15 +141,15 @@ describe('FileController', () => {
   });
 
   describe('fileGetUrl', () => {
-    test('returns a file URL', () => {
+    test('returns a file URL', async () => {
+      getSignedUrl.mockResolvedValueOnce('http://presigned.download.url');
+
       const request = {
         input: {
-          body: {
-            fileKey: 'path/to/file.txt',
-          },
           args: {
+            fileKey: 'path/to/file.txt',
             bucketName: 'my-bucket',
-            bucketRegion: 'us-east-1', // Added this line
+            bucketRegion: 'us-east-1',
           },
         },
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
@@ -147,11 +158,10 @@ describe('FileController', () => {
       };
           
 
-      const result = fileController.fileGetUrl(request);
+      const result = await fileController.fileGetUrl(request);
 
-      // Since we removed async, result is not a promise now.
       expect(result).toEqual({
-        fileUrl: 'http://localhost:9000/my-bucket/path/to/file.txt',
+        fileUrl: 'http://presigned.download.url',
       });
     });
   });
