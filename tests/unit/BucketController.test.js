@@ -99,6 +99,10 @@ describe('BucketController', () => {
       getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
         return request.input.body[key] || defaultValue;
       }),
+      getBodyBoolean: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
+      
     };
 
     // Simulate that the bucket does not exist
@@ -142,6 +146,9 @@ describe('BucketController', () => {
       getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
         return request.input.body[key] || defaultValue;
       }),
+      getBodyBoolean: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
     };
 
     // Simulate that the bucket already exists
@@ -167,6 +174,9 @@ describe('BucketController', () => {
         },
       },
       getBodyObject: jest.fn().mockImplementation((key, defaultValue) => {
+        return request.input.body[key] || defaultValue;
+      }),
+      getBodyBoolean: jest.fn().mockImplementation((key, defaultValue) => {
         return request.input.body[key] || defaultValue;
       }),
     };

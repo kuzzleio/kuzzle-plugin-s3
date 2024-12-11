@@ -94,11 +94,11 @@ describe('S3Plugin - init', () => {
         actions: expect.objectContaining({
           create: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'post', path: '/_bucket/create/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'post', path: '/create/:bucketRegion/:bucketName' }],
           }),
           delete: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'delete', path: '/_bucket/delete/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'delete', path: '/delete/:bucketRegion/:bucketName' }],
           }),
         }),
       }),
@@ -106,7 +106,7 @@ describe('S3Plugin - init', () => {
         actions: expect.objectContaining({
           fileGetUrl: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'get', path: '/_file/get-url/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'get', path: '/get-url/:bucketRegion/:bucketName' }],
           }),
         }),
       }),
@@ -114,7 +114,7 @@ describe('S3Plugin - init', () => {
         actions: expect.objectContaining({
           getUploadUrl: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'post', path: '/_upload/get-url/:bucketRegion/:bucketName/:filename' }],
+            http: [{ verb: 'post', path: '/get-url/:bucketRegion/:bucketName/:filename' }],
           }),
         }),
       }),

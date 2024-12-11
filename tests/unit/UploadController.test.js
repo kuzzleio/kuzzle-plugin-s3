@@ -85,10 +85,9 @@ describe('UploadController', () => {
             filename: 'test-file.txt',
             bucketName: 'my-bucket',
             bucketRegion: 'us-east-1',
-          },
-          body: {
             uploadDir: 'my-uploads',
           },
+          body: {},
         },
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
           return request.input.body[key] || defaultValue;
