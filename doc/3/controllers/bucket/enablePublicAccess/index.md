@@ -1,19 +1,19 @@
 ---
 code: true
 type: page
-title: create
+title: enable-public-access
 ---
 
 # delete
 
-Deletes an existing empty S3 bucket
+Disable public access block for a bucket (Minio buckets will be ignored for this call and receive a message to see minIO server config)
 
 ## Query Syntax
 
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/<bucketName>/<bucketRegion>
+URL: http://kuzzle:7512/_plugin/s3/bucket/public-access/<bucketName>/<bucketRegion>
 Method: DELETE
 ```
 
@@ -22,8 +22,8 @@ Method: DELETE
 ```js
 {
   "controller": "s3",
-  "action": "delete",
-  "bucketName": "mybucket"
+  "action": "enablePublicAccess",
+  "bucketName": "bucket-name"
   "bucketRegion": "eu-west-3"
 }
 ```
@@ -41,10 +41,10 @@ Returns an object with the following properties:
 {
   "status": 200,
   "error": null,
-  "action": "delete",
+  "action": "enablePublicAccess",
   "controller": "s3/bucket",
   "result": {
-    "result": "ok"
+    "result": { message: `Public access enabled for bucket "bucket-name".` };
   }
 }
 ```
