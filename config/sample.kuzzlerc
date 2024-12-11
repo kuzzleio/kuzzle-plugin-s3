@@ -15,6 +15,13 @@
           "accessKeyIdPath": "foo.s3.us-east-1.accessKeyId",
           "secretAccessKeyPath": "foo.s3.us-east-1.secretAccessKey",
           "isMinio": false
+        },
+        "custom-minio": {
+          "endpoint": "https://minio.example.com",
+          "forcePathStyle": true,
+          "accessKeyIdPath": "foo.s3.minio.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.minio.secretAccessKey",
+          "isMinio": true
         }
       },
       "signedUrlTTL": "20min"
