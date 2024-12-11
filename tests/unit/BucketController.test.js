@@ -317,7 +317,7 @@ describe('BucketController', () => {
 
     test('skip enabling public access if Minio', async () => {
       // Change config to isMinio = true for this test
-      bucketController.config.isMinio = true;
+      bucketController.config.endpoints['us-east-1'].isMinio = true;
 
       const request = {
         input: {
@@ -332,7 +332,7 @@ describe('BucketController', () => {
 
       // When isMinio = true, it should NOT call deletePublicAccessBlock
       expect(mockDeletePublicAccessBlock).not.toHaveBeenCalled();
-      expect(result).toEqual({ message: 'Public access enabled for bucket "my-bucket".' });
+      expect(result).toEqual({ message: 'Public access is managed differently for MinIO buckets. Ensure you configure bucket policies or access rules directly on your MinIO server for bucket "my-bucket".' });
     });
 
     test('fail to enable public access due to error', async () => {
