@@ -25,8 +25,6 @@ Method: GET
 {
   "controller": "s3/file",
   "action": "getUrl",
-  "bucketName":"<bucketname>",
-  "bucketRegion":"<bucketregion>",
   "signedUrl":"true"
   "fileKey": "xen/<uuid>-headcrab.png"
 }
@@ -37,8 +35,6 @@ Method: GET
 ## Arguments
 
 - `fileKey`: [file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys) in S3 bucket
-- `bucketName` (optional): the name of the bucket
-- `bucketRegion` (optional): the region where the specified bucket is located,
 - `signedUrl` (optional): flag to use a signed url,
   
 ---
