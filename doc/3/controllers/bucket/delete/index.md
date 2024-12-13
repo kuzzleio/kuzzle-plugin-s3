@@ -43,8 +43,6 @@ Returns an object with the following properties:
   "error": null,
   "action": "delete",
   "controller": "s3/bucket",
-  "result": {
-    "result": { message: `Bucket "bucket-name" deleted.` }
-  }
+  "result": { message: `Bucket "bucket-name" deleted.` }
 }
 ```

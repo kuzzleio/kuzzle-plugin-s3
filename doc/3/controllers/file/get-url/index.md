@@ -49,7 +49,7 @@ Returns an object containing the file signed public URL.
 {
   "status": 200,
   "error": null,
-  "action": "getUrl",
+  "action": "fileGetUrl",
   "controller": "s3/file",
   "requestId": "<unique request identifier>",
   "result": {

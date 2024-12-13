@@ -48,7 +48,7 @@ Returns a boolean indicating that the file has been deleted from S3.
 {
   "status": 200,
   "error": null,
-  "action": "delete",
+  "action": "fileDelete",
   "controller": "s3/file",
   "requestId": "<unique request identifier>",
   "result": { message: `File "xen/<uuid>-headcrab.png" deleted.` }

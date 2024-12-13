@@ -43,8 +43,6 @@ Returns an object with the following properties:
   "error": null,
   "action": "exists",
   "controller": "s3/bucket",
-  "result": {
-    "result": { "exists": "true" }
-  }
+  "result": { "exists": "true" }
 }
 ```

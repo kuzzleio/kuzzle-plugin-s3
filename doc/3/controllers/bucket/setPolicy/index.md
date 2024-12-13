@@ -70,8 +70,6 @@ Returns an object with the following properties:
   "error": null,
   "action": "setPolicy",
   "controller": "s3/bucket",
-  "result": {
-    "result":  { "message": 'Policy applied to bucket "bucket-name".' }
-  }
+  "result":  { "message": 'Policy applied to bucket "bucket-name".' }
 }
 ```

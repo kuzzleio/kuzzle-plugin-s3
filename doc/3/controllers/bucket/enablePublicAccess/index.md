@@ -43,8 +43,6 @@ Returns an object with the following properties:
   "error": null,
   "action": "enablePublicAccess",
   "controller": "s3/bucket",
-  "result": {
-    "result": { message: `Public access enabled for bucket "bucket-name".` };
-  }
+  "result": { message: `Public access enabled for bucket "bucket-name".` };
 }
 ```
