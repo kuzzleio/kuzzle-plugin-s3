@@ -230,7 +230,6 @@ describe('BucketController', () => {
     });
   });
 
-  // ---- Tests for setPolicy ----
   describe('setPolicy', () => {
     test('set policy successfully', async () => {
       const request = {
@@ -295,7 +294,6 @@ describe('BucketController', () => {
     });
   });
 
-  // ---- Tests for enablePublicAccess ----
   describe('enablePublicAccess', () => {
     test('successfully enable public access (not Minio)', async () => {
       const request = {
