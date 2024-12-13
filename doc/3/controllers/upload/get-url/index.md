@@ -1,7 +1,7 @@
 ---
 code: true
 type: page
-title: getUrl
+title: getUploadUrl
 ---
 
 # getUrl
@@ -39,7 +39,9 @@ Method: GET
 
 - `filename`: Uploaded file name
 - `uploadDir`: Upload directory (see [s3 file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys))
-- `bucketName` : Override config bucketName
+- `bucketName` : Name of the bucket 
+- `bucketRegion` : Region of the bucket 
+- `publicUrl` (optionnal): boolean indicating that plugin should return public URL
 ---
 
 ## Response
@@ -54,7 +56,7 @@ Returns an object with the following properties:
   "status": 200,
   "error": null,
   "controller": "s3/upload",
-  "action": "getUrl",
+  "action": "getUploadUrl",
   "requestId": "<unique request identifier>",
   "result": {
     "fileKey": "xen/<uuid>-headcrab.png", 

@@ -38,6 +38,7 @@ Method: GET
 - `fileKey`: [file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys) in S3 bucket
 - `bucketName`: the name of the bucket
 - `bucketRegion`: the region where the specified bucket is located,
+- `publicUrl` (optionnal): boolean indicating that plugin should return public URL
   
 ---
 
