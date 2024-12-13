@@ -136,7 +136,10 @@ The configuration defines S3-compatible endpoints, including AWS S3 and MinIO in
           "forcePathStyle": false,
           "accessKeyIdPath": "foo.s3.eu-west-3.accessKeyId",
           "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey",
-          "isMinio": false
+          "isMinio": false,
+          "s3ClientOptions": {
+            // any needed option from aws sdk https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property
+          }
         },
         "minio-instance": {
           "endpoint": "https://minio.example.com",

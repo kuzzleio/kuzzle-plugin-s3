@@ -7,7 +7,11 @@
           "forcePathStyle": false,
           "accessKeyIdPath": "foo.s3.eu-west-3.accessKeyId",
           "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey",
-          "isMinio": false
+          "isMinio": false,
+          "s3ClientOptions": {
+            "maxRetries": 3,
+            "sslEnabled": true
+          }
         },
         "us-east-1": {
           "endpoint": "https://s3.us-east-1.amazonaws.com",
