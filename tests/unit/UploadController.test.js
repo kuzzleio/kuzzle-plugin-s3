@@ -64,6 +64,12 @@ describe('UploadController', () => {
           accessKeyIdPath: 'accessKeyId',
           secretAccessKeyPath: 'secretAccessKey',
         },
+        'eu-west-1': {
+          endpoint: 'https://my-endpoint.com',
+          forcePathStyle: false,
+          accessKeyIdPath: 'accessKeyId',
+          secretAccessKeyPath: 'secretAccessKey',
+        },
       },
     };
 
@@ -78,6 +84,69 @@ describe('UploadController', () => {
   });
 
   describe('getUploadUrl', () => {
+    test('returns path-style public url if requested', async () => {
+      const request = {
+        input: {
+          args: {
+            filename: 'test-file.txt',
+            bucketName: 'my-bucket',
+            bucketRegion: 'us-east-1',
+            uploadDir: 'my-uploads',
+            publicUrl: true,
+          },
+          body: {},
+        },
+        getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
+          return request.input.body[key] || defaultValue;
+        }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
+      };
+
+      getSignedUrl.mockResolvedValueOnce('http://presigned.upload.url');
+
+      const result = await uploadController.getUploadUrl(request);
+
+      expect(result).toEqual({
+        fileKey: 'my-uploads/fixed-uuid-test-file.txt',
+        uploadUrl: 'http://presigned.upload.url',
+        publicUrl: 'http://localhost:9000/my-bucket/my-uploads/fixed-uuid-test-file.txt',
+        ttl: mockConfig.signedUrlTTL,
+      });
+    });
+    test('returns virtual host public url if requested', async () => {
+      const request = {
+        input: {
+          args: {
+            filename: 'test-file.txt',
+            bucketName: 'my-bucket',
+            bucketRegion: 'eu-west-1',
+            uploadDir: 'my-uploads',
+            publicUrl: true,
+          },
+          body: {},
+        },
+        getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
+          return request.input.body[key] || defaultValue;
+        }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
+      };
+
+      getSignedUrl.mockResolvedValueOnce('http://presigned.upload.url');
+
+      const result = await uploadController.getUploadUrl(request);
+
+      expect(result).toEqual({
+        fileKey: 'my-uploads/fixed-uuid-test-file.txt',
+        uploadUrl: 'http://presigned.upload.url',
+        publicUrl: 'https://my-endpoint.com/my-bucket/my-uploads/fixed-uuid-test-file.txt',
+        ttl: mockConfig.signedUrlTTL,
+      });
+    });
+
     test('returns upload info on success', async () => {
       const request = {
         input: {
@@ -91,6 +160,9 @@ describe('UploadController', () => {
         },
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
           return request.input.body[key] || defaultValue;
+        }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
         }),
       };
 
@@ -135,6 +207,9 @@ describe('UploadController', () => {
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
           return request.input.body[key] || defaultValue;
         }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
       };
 
       getSignedUrl.mockResolvedValueOnce('http://presigned.upload.url');
@@ -157,6 +232,9 @@ describe('UploadController', () => {
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
           return request.input.body[key] || defaultValue;
         }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
       };
 
       getSignedUrl.mockRejectedValueOnce(new Error('AWS error'));
@@ -175,6 +253,9 @@ describe('UploadController', () => {
           body: {},
         },
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => defaultValue),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
       };
 
       await expect(uploadController.getUploadUrl(request)).rejects.toThrow(mockContext.errors.BadRequestError);

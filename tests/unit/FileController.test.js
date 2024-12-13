@@ -58,6 +58,12 @@ describe('FileController', () => {
           accessKeyIdPath: 'accessKeyId',
           secretAccessKeyPath: 'secretAccessKey',
         },
+        'eu-west-1': {
+          endpoint: 'https://my-endpoint.com',
+          forcePathStyle: false,
+          accessKeyIdPath: 'accessKeyId',
+          secretAccessKeyPath: 'secretAccessKey',
+        },
       },
     };
 
@@ -141,7 +147,7 @@ describe('FileController', () => {
   });
 
   describe('fileGetUrl', () => {
-    test('returns a file URL', async () => {
+    test('returns a presigned file URL', async () => {
       getSignedUrl.mockResolvedValueOnce('http://presigned.download.url');
 
       const request = {
@@ -155,6 +161,9 @@ describe('FileController', () => {
         getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
           return request.input.body[key] || defaultValue;
         }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
       };
           
 
@@ -162,6 +171,56 @@ describe('FileController', () => {
 
       expect(result).toEqual({
         fileUrl: 'http://presigned.download.url',
+      });
+    });
+    test('returns a path style public file URL', async () => {
+      const request = {
+        input: {
+          args: {
+            fileKey: 'path/to/file.txt',
+            bucketName: 'my-bucket',
+            bucketRegion: 'us-east-1',
+            publicUrl: true,
+          },
+        },
+        getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
+          return request.input.body[key] || defaultValue;
+        }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
+      };
+          
+
+      const result = await fileController.fileGetUrl(request);
+
+      expect(result).toEqual({
+        fileUrl: 'http://localhost:9000/my-bucket/path/to/file.txt',
+      });
+    });
+    test('returns a virtual host public file URL', async () => {
+      const request = {
+        input: {
+          args: {
+            fileKey: 'path/to/file.txt',
+            bucketName: 'my-bucket',
+            bucketRegion: 'eu-west-1',
+            publicUrl: true,
+          },
+        },
+        getBodyString: jest.fn().mockImplementation((key, defaultValue) => {
+          return request.input.body[key] || defaultValue;
+        }),
+        getBoolean: jest.fn().mockImplementation((key) => {
+          return request.input.args[key] || false;
+        }),
+      };
+          
+
+      const result = await fileController.fileGetUrl(request);
+
+      expect(result).toEqual({
+        fileUrl: 'https://my-bucket.my-endpoint.com/path/to/file.txt',
       });
     });
   });
