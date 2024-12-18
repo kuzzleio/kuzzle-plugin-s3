@@ -90,31 +90,31 @@ describe('S3Plugin - init', () => {
     }, mockContext);
 
     const expectedApi = {
-      bucket: expect.objectContaining({
+      's3/bucket': expect.objectContaining({
         actions: expect.objectContaining({
           create: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'post', path: '/create/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'post', path: '/bucket/create/:bucketRegion/:bucketName' }],
           }),
           delete: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'delete', path: '/delete/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'delete', path: '/bucket/delete/:bucketRegion/:bucketName' }],
           }),
         }),
       }),
-      file: expect.objectContaining({
+      's3/file': expect.objectContaining({
         actions: expect.objectContaining({
           fileGetUrl: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'get', path: '/get-url/:bucketRegion/:bucketName' }],
+            http: [{ verb: 'get', path: '/file/get-url/:bucketRegion/:bucketName' }],
           }),
         }),
       }),
-      upload: expect.objectContaining({
+      's3/upload': expect.objectContaining({
         actions: expect.objectContaining({
           getUploadUrl: expect.objectContaining({
             handler: expect.any(Function),
-            http: [{ verb: 'post', path: '/get-url/:bucketRegion/:bucketName/:filename' }],
+            http: [{ verb: 'post', path: '/upload/get-url/:bucketRegion/:bucketName/:filename' }],
           }),
         }),
       }),
