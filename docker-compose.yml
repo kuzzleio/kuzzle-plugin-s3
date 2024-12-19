@@ -22,8 +22,7 @@ services:
       - NODE_ENV=development
       - DEBUG=kuzzle:plugins
       - KUZZLE_VAULT_KEY=${KUZZLE_VAULT_KEY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - KUZZLE_SECRETS_FILE=${KUZZLE_SECRETS_FILE}
 
   redis:
     image: redis:5
