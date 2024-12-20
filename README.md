@@ -8,10 +8,10 @@ These URLs must be generated on the server side, this plugin includes among othe
 
 ## Compatibility matrix
 
-| Kuzzle Version | Plugin Version |
-| -------------- | -------------- |
-| 1.x.x          | 1.x.x          | 
-| 2.x.x          | 2.x.x          | 
+| Kuzzle Version | Plugin Version  |
+| -------------- | --------------- |
+| 1.x.x          | 1.x.x           |
+| 2.x.x          | 2.x.x and 3.x.x |
 
 ## Usage
 
