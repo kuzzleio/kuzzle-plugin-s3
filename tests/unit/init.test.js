@@ -52,7 +52,7 @@ describe('S3Plugin - init', () => {
     plugin.init(customConfig, mockContext);
 
     // Verify that custom config is merged with default
-    expect(plugin.config.signedUrlTTL).toBe('10min');
+    expect(plugin.config.signedUrlTTL).toBe(600000);
     expect(plugin.config.endpoints['eu-central-1']).toEqual(customConfig.endpoints['eu-central-1']);
     expect(plugin.config.endpoints['eu-west-1']).toEqual(plugin.defaultConfig.endpoints['eu-west-1']); // Default remains
 
