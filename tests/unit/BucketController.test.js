@@ -13,6 +13,12 @@ const mockPutBucketCors = jest.fn();
 const mockDeleteBucket = jest.fn();
 const mockPutBucketPolicy = jest.fn();
 const mockDeletePublicAccessBlock = jest.fn();
+const mockS3Send = jest.fn();
+
+jest.mock('@aws-sdk/client-s3', () => ({
+  ListObjectsV2Command: jest.fn().mockImplementation((params) => params),
+  DeleteObjectsCommand: jest.fn().mockImplementation((params) => params),
+}));
 
 const { getS3Client } = require('../../lib/helpers');
 
@@ -29,6 +35,8 @@ describe('BucketController', () => {
     mockDeleteBucket.mockReset();
     mockPutBucketPolicy.mockReset();
     mockDeletePublicAccessBlock.mockReset();
+    mockS3Send.mockReset();
+
     // Mock context and config
     mockContext = {
       errors: {
@@ -40,11 +48,9 @@ describe('BucketController', () => {
         info: jest.fn(),
       },
       secrets: {
-        // simplified for tests
         accessKeyId: 'accessKeyId',
         secretAccessKey:'secretAccessKey'
       },
-
     };
 
     mockConfig = {
@@ -60,7 +66,7 @@ describe('BucketController', () => {
       },
     };
 
-    // Mock getS3Client to return a mock S3 object
+    // Mock getS3Client to return a mock S3 object including the send method
     getS3Client.mockImplementation(() => {
       return {
         headBucket: mockHeadBucket,
@@ -69,6 +75,7 @@ describe('BucketController', () => {
         deleteBucket: mockDeleteBucket,
         putBucketPolicy: mockPutBucketPolicy,
         deletePublicAccessBlock: mockDeletePublicAccessBlock,
+        send: mockS3Send,
       };
     });
 
@@ -102,7 +109,6 @@ describe('BucketController', () => {
       getBodyBoolean: jest.fn().mockImplementation((key, defaultValue) => {
         return request.input.body[key] || defaultValue;
       }),
-      
     };
 
     // Simulate that the bucket does not exist
@@ -190,6 +196,7 @@ describe('BucketController', () => {
     expect(mockCreateBucket).not.toHaveBeenCalled();
     expect(mockPutBucketCors).not.toHaveBeenCalled();
   });
+
   describe('exists', () => {
     test('bucket exists', async () => {
       const request = {
@@ -347,6 +354,66 @@ describe('BucketController', () => {
 
       await expect(bucketController.enablePublicAccess(request)).rejects.toThrow('AWS Error');
       expect(mockDeletePublicAccessBlock).toHaveBeenCalled();
+    });
+  });
+
+  // New tests for the empty method
+  describe('empty', () => {
+    let request;
+
+    beforeEach(() => {
+      request = {
+        input: {
+          args: {
+            bucketName: 'my-bucket',
+            bucketRegion: 'us-east-1',
+          },
+        },
+      };
+    });
+
+    test('empty a bucket with no objects', async () => {
+      // First call to list objects returns no objects
+      mockS3Send.mockResolvedValueOnce({
+        IsTruncated: false,
+        Contents: [],
+      });
+
+      const result = await bucketController.empty(request);
+
+      expect(mockS3Send).toHaveBeenCalledWith(expect.any(Object)); // At least called once for ListObjectsV2Command
+      expect(result).toEqual({ message: 'Bucket "my-bucket" has been emptied.' });
+    });
+
+    test('empty a bucket with objects', async () => {
+      // First listing returns objects
+      mockS3Send
+        .mockResolvedValueOnce({
+          IsTruncated: false,
+          Contents: [
+            { Key: 'object1' },
+            { Key: 'object2' },
+          ],
+        })
+        // Next call (deleteObjects) returns success
+        .mockResolvedValueOnce({})
+        // Another listing after deletion (simulate multiple iterations)
+        .mockResolvedValueOnce({
+          IsTruncated: false,
+          Contents: [],
+        });
+
+      const result = await bucketController.empty(request);
+
+      expect(result).toEqual({ message: 'Bucket "my-bucket" has been emptied.' });
+    });
+
+    test('fail to empty bucket on error', async () => {
+      // Simulate an AWS error when listing or deleting
+      mockS3Send.mockRejectedValueOnce(new Error('AWS Error'));
+
+      await expect(bucketController.empty(request)).rejects.toThrow('AWS Error');
+      expect(mockS3Send).toHaveBeenCalled();
     });
   });
 });
