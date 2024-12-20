@@ -1,7 +1,13 @@
 {
-  "extends": ["semantic-release-config-kuzzle"],
+  "extends": [
+    "semantic-release-config-kuzzle"
+  ],
   "branches": [
+    "2-stable",
     "master",
-    { "name": "beta", "prerelease": true }
+    {
+      "name": "beta",
+      "prerelease": true
+    }
   ]
 }
