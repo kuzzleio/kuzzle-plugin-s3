@@ -15,7 +15,7 @@ Deletes a previously uploaded file.
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/file/delete/:bucketRegion/:bucketName?fileKey="<fileKey>"
+URL: http://kuzzle:7512/file/delete/:bucketRegion/:bucketName?fileKey=<fileKey>
 Method: DELETE
 ```
 

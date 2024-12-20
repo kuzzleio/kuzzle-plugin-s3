@@ -13,7 +13,7 @@ Check if a S3 bucket exists.
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/exists/<bucketName>
+URL: http://kuzzle:7512/bucket/exists/<bucketRegion>/<bucketName>
 Method: GET
 ```
 

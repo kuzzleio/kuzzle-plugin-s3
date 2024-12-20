@@ -13,7 +13,7 @@ Creates a S3 bucket
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/create/<bucketName>/<bucketRegion>
+URL: http://kuzzle:7512/bucket/create/<bucketName>/<bucketRegion>
 Method: POST
 Body:
 ```

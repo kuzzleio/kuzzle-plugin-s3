@@ -15,7 +15,7 @@ List the files keys uploaded to an S3 Bucket.
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/file/list-keys/<bucketRegion>/<bucketName>
+URL: http://kuzzle:7512/file/list-keys/<bucketRegion>/<bucketName>
 Method: GET
 ```
 

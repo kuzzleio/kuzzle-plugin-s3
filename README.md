@@ -12,134 +12,7 @@ These URLs must be generated on the server side, this plugin includes among othe
 | -------------- | -------------- |
 | 1.x.x          | 1.x.x          |
 | 2.x.x          | 2.x.x          |
-
-## Usage
-
-Get a Presigned URL:
-
-```javascript
-// Kuzzle request
-{
-  "controller": "s3/upload",
-  "action": "getUrl",
-  "filename": "headcrab.png",
-  "uploadDir": "xen"
-}
-
-// Kuzzle response
-{
-  "fileKey": "xen/<uuid>-headcrab.png",
-  "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
-  "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
-  "ttl": 1200000
-}
-```
-
-Then send a PUT request to the `uploadUrl` URL with the body set to the file's content and a `Content-Type` header corresponding to the file mime type.
-
-### Example using the JavaScript SDK
-
-```js
-  // Get a Presigned URL
-  const file = document.getElementById('uploadInput').files[0];
-  const { result } = await kuzzle.query({
-    controller: 's3/upload',
-    action: 'getUploadUrl',
-    uploadDir: 'xen',
-    filename: file.name
-  });
-
-  // Upload the file directly to S3
-  const axiosOptions = {
-    headers: {
-      'Content-Type': file.type
-    }
-  };
-  await axios.put(result.uploadUrl, file, axiosOptions);
-
-```
-
-You can see a full example here: [test/s3-upload-test.html](test/s3-upload-test.html)
-
-### API
-
-#### *upload*\*:getUploadUrl\*
-
-Returns a Presigned URL to upload directly to S3.\
-The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/2/manual-setup/config/))
-
-File uploaded to the generated URL must be validated with `upload:validate` otherwise they will be deleted after the same TTL as for the URL expiration.
-
-*Request format:*
-
-```javascript
-{
-  "controller": "s3/upload",
-  "action": "getUploadUrl",
-  "filename": "headcrab.png",
-  "uploadDir": "xen"
-}
-```
-
-*Response result format:*
-
-```javascript
-{
-  "fileKey": "xen/<uuid>-headcrab.png",
-  "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
-  "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
-  "ttl": 1200000
-}
-```
-
-#### *file*\*:getFileUrl\*
-
-Returns the public file URL.
-
-*Request format:*
-
-```javascript
-{
-  "controller": "s3/file",
-  "action": "getFileUrl",
-  "fileKey": "xen/<uuid>-headcrab.png"
-}
-```
-
-*Response result format:*
-
-```javascript
-{
-  "fileUrl": "https://s3.eu-west-3.amazonaws.com/..."
-}
-```
-
-#### *file*\*:delete\*
-
-Deletes an uploaded file from S3.
-
-*Request format:*
-
-```javascript
-{
-  "controller": "s3/file",
-  "action": "fileDelete",
-  "fileKey": "xen/<uuid>-headcrab.png"
-}
-```
-
-#### *file*\*:getFilesKeys\*
-
-List the files keys uploaded to an S3 Bucket.
-
-*Request format:*
-
-```javascript
-{
-  "controller": "s3/file",
-  "action": "getFilesKeys",
-}
-```
+| 2.x.x          | 3.x.x          |
 
 ## Configuration
 
@@ -188,6 +61,141 @@ Then in your `kuzzlerc` file, you can change the following configuration variabl
 
 In addition to Amazon AWS S3, this plugin allows you to use any S3-API compatible service accessible through the [AWS-S3 SDK](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html). Any specific [configuration option](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property) can be added to the `s3ClientOptions` configuration attribute. Please note that the parameters are translated directly, so refer to the SDK documentation for available options.
 
+## Usage
+
+Get a Presigned URL:
+
+```javascript
+// Kuzzle request
+{
+  "controller": "s3/upload",
+  "action": "getUploadUrl",
+  "filename": "headcrab.png",
+  "uploadDir": "xen"
+}
+
+// Kuzzle response
+{
+  "fileKey": "xen/<uuid>-headcrab.png",
+  "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
+  "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
+  "ttl": 1200000
+}
+```
+
+Then send a PUT request to the `uploadUrl` URL with the body set to the file's content and a `Content-Type` header corresponding to the file mime type.
+
+### Example using the JavaScript SDK
+
+```js
+  // Get a Presigned URL
+  const file = document.getElementById('uploadInput').files[0];
+  const { result } = await kuzzle.query({
+    controller: 's3/upload',
+    action: 'getUploadUrl',
+    uploadDir: 'xen',
+    filename: file.name
+  });
+
+  // Upload the file directly to S3
+  const axiosOptions = {
+    headers: {
+      'Content-Type': file.type
+    }
+  };
+  await axios.put(result.uploadUrl, file, axiosOptions);
+
+```
+
+
+### API
+
+#### *upload*\*:getUploadUrl\*
+
+Returns a Presigned URL to upload directly to S3.\
+The URL is only valid for a specified period of time. (Configurable in the [kuzzlerc file](https://docs.kuzzle.io/plugins/2/manual-setup/config/))
+
+File uploaded to the generated URL must be validated with `upload:validate` otherwise they will be deleted after the same TTL as for the URL expiration.
+
+*Request format:*
+
+```javascript
+{
+  "controller": "s3/upload",
+  "action": "getUploadUrl",
+  "filename": "headcrab.png",
+  "uploadDir": "xen",
+  "bucketRegion": "foo",
+  "bucketName": "bar"
+}
+```
+
+*Response result format:*
+
+```javascript
+{
+  "fileKey": "xen/<uuid>-headcrab.png",
+  "uploadUrl": "https://s3.eu-west-3.amazonaws.com/...",
+  "fileUrl": "https://s3.eu-west-3.amazonaws.com/...",
+  "ttl": 1200000
+}
+```
+
+#### *file*\*:getFileUrl\*
+
+Returns the public file URL.
+
+*Request format:*
+
+```javascript
+{
+  "controller": "s3/file",
+  "action": "getFileUrl",
+  "fileKey": "xen/<uuid>-headcrab.png",
+  "bucketRegion": "foo",
+  "bucketName": "bar"
+}
+```
+
+*Response result format:*
+
+```javascript
+{
+  "fileUrl": "https://s3.eu-west-3.amazonaws.com/..."
+}
+```
+
+#### *file*\*:delete\*
+
+Deletes an uploaded file from S3.
+
+*Request format:*
+
+```javascript
+{
+  "controller": "s3/file",
+  "action": "fileDelete",
+  "fileKey": "xen/<uuid>-headcrab.png",
+  "bucketRegion": "foo",
+  "bucketName": "bar"
+}
+```
+
+#### *file*\*:getFilesKeys\*
+
+List the files keys uploaded to an S3 Bucket.
+
+*Request format:*
+
+```javascript
+{
+  "controller": "s3/file",
+  "action": "getFilesKeys",
+  "bucketRegion": "foo",
+  "bucketName": "bar"
+}
+```
+
 ## Installation
 
 ### Local setup
@@ -197,6 +205,3 @@ You can use the [docker-compose.yml](docker/docker-compose.yml) file provided in
 ```bash
 docker-compose -f docker-compose.yml up
 ```
-
-Then you can open the file [test/s3-upload-test.html](test/s3-upload-test.html) in your browser.
-

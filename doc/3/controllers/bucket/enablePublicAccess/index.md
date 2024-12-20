@@ -13,7 +13,7 @@ Disable public access block for a bucket (Minio buckets will be ignored for this
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/public-access/<bucketName>/<bucketRegion>
+URL: http://kuzzle:7512/bucket/public-access/<bucketName>/<bucketRegion>
 Method: DELETE
 ```
 

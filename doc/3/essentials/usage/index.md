@@ -20,7 +20,9 @@ The plugin allows users to request a URL to directly send a file to Amazon S3 (o
   "controller": "s3/upload",
   "action": "getUrl",
   "filename": "headcrab.png",
-  "uploadDir": "xen"
+  "uploadDir": "xen",
+  "bucketName": "my-bucket",
+  "bucketRegion": "us-west-1"
 }
 
 // Kuzzle response
@@ -50,7 +52,9 @@ const { result } = await kuzzle.query({
   controller: 's3/upload',
   action: 'getUploadUrl',
   uploadDir: 'xen',
-  filename: file.name
+  filename: file.name,
+  bucketName: 'my-bucket',
+  bucketRegion: 'us-west-1',
 });
 
 // Upload the file directly to S3

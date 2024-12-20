@@ -16,7 +16,7 @@ The URL expires after a configurable TTL. (Configurable in the [kuzzlerc file](/
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/upload/get-url/<bucketRegion>/<bucketName>/<filename>?uploadDir="<uploadDir>"
+URL: http://kuzzle:7512/upload/get-url/<bucketRegion>/<bucketName>/<filename>?uploadDir=<uploadDir>&publicUrl=false
 Method: GET
 ```
 
@@ -29,7 +29,8 @@ Method: GET
   "bucketName": "bucket-name"
   "bucketRegion": "bucket-region"
   "filename": "headcrab.png", 
-  "uploadDir": "xen" 
+  "uploadDir": "xen",
+  "publicUrl" : false
 }
 ```
 

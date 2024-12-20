@@ -15,7 +15,7 @@ Gets a public URL for an uploaded file.
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/get-url/<bucketRegion>/<bucketName>?fileKey="<fileKey>"
+URL: http://kuzzle:7512/get-url/<bucketRegion>/<bucketName>?fileKey=<fileKey>
 Method: GET
 ```
 

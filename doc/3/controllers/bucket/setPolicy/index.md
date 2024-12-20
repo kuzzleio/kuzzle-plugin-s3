@@ -13,7 +13,7 @@ Set a Policy for a bucket
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/_plugin/s3/bucket/set-policy/<bucketRegion>/<bucketName>
+URL: http://kuzzle:7512/bucket/set-policy/<bucketRegion>/<bucketName>
 Method: POST
 ```
 
