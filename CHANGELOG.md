@@ -1,3 +1,18 @@
+# [3.0.0](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.4...v3.0.0) (2024-12-20)
+
+
+* BREAKING CHANGE: Release v3 ([18d4326](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/18d4326c6b75dccad84a8209fb13181c1898c46e))
+
+
+### Features
+
+* migrate tests to jest ([#34](https://github.com/kuzzleio/kuzzle-plugin-s3/issues/34)) ([bf45307](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/bf45307ee95c56d10ac0c0bfa8f639ecb1fce33a))
+
+
+### BREAKING CHANGES
+
+* Release v3
+
 ## [2.0.4](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.3...v2.0.4) (2024-11-13)
 
 
