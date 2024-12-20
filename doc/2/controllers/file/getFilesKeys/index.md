@@ -25,15 +25,8 @@ Method: GET
 {
   "controller": "s3/file",
   "action": "getFilesKeys",
-
 }
 ```
-
----
-
-## Arguments
-
-None
 
 ---
 

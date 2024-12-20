@@ -1,0 +1,34 @@
+{
+  "plugins": {
+    "s3": {
+      "endpoints": {
+        "eu-west-3": {
+          "endpoint": "https://s3.eu-west-3.amazonaws.com",
+          "forcePathStyle": false,
+          "accessKeyIdPath": "foo.s3.eu-west-3.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.eu-west-3.secretAccessKey",
+          "isMinio": false,
+          "s3ClientOptions": {
+            "maxRetries": 3,
+            "sslEnabled": true
+          }
+        },
+        "us-east-1": {
+          "endpoint": "https://s3.us-east-1.amazonaws.com",
+          "forcePathStyle": false,
+          "accessKeyIdPath": "foo.s3.us-east-1.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.us-east-1.secretAccessKey",
+          "isMinio": false
+        },
+        "custom-minio": {
+          "endpoint": "https://minio.example.com",
+          "forcePathStyle": true,
+          "accessKeyIdPath": "foo.s3.minio.accessKeyId",
+          "secretAccessKeyPath": "foo.s3.minio.secretAccessKey",
+          "isMinio": true
+        }
+      },
+      "signedUrlTTL": "20min"
+    }
+  }
+}

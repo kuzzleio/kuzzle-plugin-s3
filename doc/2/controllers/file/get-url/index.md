@@ -25,7 +25,7 @@ Method: GET
 {
   "controller": "s3/file",
   "action": "getUrl",
-
+  "signedUrl":"true"
   "fileKey": "xen/<uuid>-headcrab.png"
 }
 ```
@@ -35,7 +35,8 @@ Method: GET
 ## Arguments
 
 - `fileKey`: [file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys) in S3 bucket
-
+- `signedUrl` (optional): flag to use a signed url,
+  
 ---
 
 ## Response
