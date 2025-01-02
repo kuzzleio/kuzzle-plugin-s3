@@ -35,7 +35,6 @@ Method: DELETE
 ## Arguments
 
 - `fileKey`: [file key](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-keys) in S3 bucket
-
 ---
 
 ## Response
