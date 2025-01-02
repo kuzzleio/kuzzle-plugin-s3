@@ -9,7 +9,8 @@
     },
     {
       "name": "beta",
-      "prerelease": true
+      "prerelease": true,
+      "range": "3.x"
     },
     {
       "name": "2-stable",
