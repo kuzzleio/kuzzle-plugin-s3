@@ -1,3 +1,40 @@
+# [3.0.0](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.1.1...v3.0.0) (2025-01-02)
+
+
+### Bug Fixes
+
+* api path ([ec69546](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/ec695465d76c0582428b38efdef3d772183aacd1))
+* api routes ([5ee83f4](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/5ee83f4478a37dcf6f70c0ee8d789b21e3fa2469))
+* bucket create for minio ([c391b51](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/c391b51cc656e2964f613ae1d41114397aa39b85))
+* controller names ([1080542](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/1080542789fac66197d44de71162678dac9202f2))
+* credentials usage, error handling, request body parsing ([90c8949](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/90c89491d52c9af755870563e5ec767c5a002b94))
+* default config ([3761585](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/376158579178c7570473bef266bbb4228b2a9116))
+* fileGetUrl and tests ([c035775](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/c0357754df877edd1c4ca2f59b1bc6a881a347bc))
+* fileGetUrl http path ([8879186](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/8879186090ee0a8850676c9c2f6510607823a432))
+* http routes ([1959063](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/195906331f3cfb0aaa890a3e26cb73e9591c71d0))
+* minio Bucket enablePublic access test ([57d5dbc](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/57d5dbc2dbe5ea808ab0aba8dce3212e35a973d0))
+* minio detection for enablePublicAccess ([37b7252](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/37b725206cdcbfd3b0c9e7f414996187b84d5240))
+* parse signedUrlTTL if needed ([c2eee74](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/c2eee74411455564ec79c9d701d932ab3725dbf9))
+* remove public url usage ([95cc3ee](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/95cc3ee4548470ad76e2125171695a61c35b7282))
+* remove redis from default config ([b32c179](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/b32c179f09b3a61e4b1784a8f46efaa4bd245005))
+* remove unused env in docker compose, add needed ones ([3d14452](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/3d144520bea71968be4c6815360ff1104243f2c1))
+* **tests:** fix ttl test ([03fdec7](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/03fdec7575421d3524f55e9998c6e124bb8fae54))
+* vault is single credential source of truth ([6953105](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/6953105106c31df9b718fa6d42d7bcbab836fbe6))
+
+
+### Features
+
+* add empty method to bucket controller ([20afb01](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/20afb017c9138dcf6d7e021512bf498d7200b9fe))
+* add publicUrl support as a optionnal parameter ([99b59ff](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/99b59ff7ec87d4ed94c83336a646dfa75372ece8))
+* permit to use any S3 option for clients (endpoint level) ([0e15ca1](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/0e15ca1bf6f14b90365e933513937d62c9851951))
+* release 3.0.0-beta-1 ([9d1174a](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/9d1174a5ef542aa7a3dde5064407ae9efcacc5d0))
+* support bucket region for all routes ([1158a80](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/1158a806f42e268b5634fca538b6340b77266c5d))
+
+
+### BREAKING CHANGES
+
+* This feature requires a new configuration
+
 # [3.0.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.2.0-beta.1...v3.0.0-beta.1) (2025-01-02)
 
 
