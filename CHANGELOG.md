@@ -1,3 +1,15 @@
+# [3.0.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.2.0-beta.1...v3.0.0-beta.1) (2025-01-02)
+
+
+### Features
+
+* release 3.0.0-beta-1 ([9d1174a](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/9d1174a5ef542aa7a3dde5064407ae9efcacc5d0))
+
+
+### BREAKING CHANGES
+
+* This feature requires a new configuration
+
 # [2.2.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.1.1...v2.2.0-beta.1) (2025-01-02)
 
 
