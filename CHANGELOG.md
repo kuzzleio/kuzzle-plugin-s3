@@ -5,6 +5,14 @@
 
 * migrate tests to jest ([#34](https://github.com/kuzzleio/kuzzle-plugin-s3/issues/34)) ([bf45307](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/bf45307ee95c56d10ac0c0bfa8f639ecb1fce33a))
 
+# [2.1.0-beta.2](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2025-01-02)
+
+
+### Bug Fixes
+
+* trigger release ([78ec538](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/78ec53880806e6c2af4e935d614d57c17e6e984b))
+
+
 # [2.1.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.4...v2.1.0-beta.1) (2025-01-02)
 
 
