@@ -4,13 +4,11 @@
   ],
   "branches": [
     {
-      "name": "master",
-      "range": "3.x"
+      "name": "master"
     },
     {
       "name": "beta",
-      "prerelease": true,
-      "range": "3.x"
+      "prerelease": true
     },
     {
       "name": "2-stable",
