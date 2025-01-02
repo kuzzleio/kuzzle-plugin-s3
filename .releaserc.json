@@ -3,7 +3,6 @@
     "semantic-release-config-kuzzle"
   ],
   "branches": [
-    "2-stable",
     "master",
     {
       "name": "beta",
