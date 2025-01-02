@@ -4,3 +4,5 @@
 build/
 config/secrets.json
 doc/framework
+kuzzlerc
+secrets.enc.json

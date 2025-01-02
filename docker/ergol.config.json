@@ -1,0 +1,7 @@
+{
+  "killDelay": "5000",
+  "nodeArgs": [],
+  "watch": [
+    "plugins/enabled"
+  ]
+}

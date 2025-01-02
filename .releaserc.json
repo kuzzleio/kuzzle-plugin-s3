@@ -7,6 +7,14 @@
     {
       "name": "beta",
       "prerelease": true
+    },
+    {
+      "name": "2-stable",
+      "range": "2.x"
+    },
+    {
+      "name": "1-stable",
+      "range": "1.x"
     }
   ]
 }

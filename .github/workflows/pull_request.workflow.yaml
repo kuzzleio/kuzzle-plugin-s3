@@ -5,42 +5,37 @@ on: [pull_request]
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+      - uses: actions/checkout@v4
+
+      - name: Install additional libraries
+        uses: ./.github/actions/install-packages
+
+      - name: Node version ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - uses: actions/setup-node@v1.4.4
-        with:
-          node-version: "16"
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
       - uses: ./.github/actions/lint
 
   unit-test:
     name: unit tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+      - uses: actions/checkout@v4
+
+      - name: Node version ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - uses: actions/setup-node@v1.4.4
-        with:
-          node-version: "16"
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
       - uses: ./.github/actions/unit-test
