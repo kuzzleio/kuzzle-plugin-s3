@@ -1,13 +1,13 @@
 {
   "name": "kuzzle-plugin-s3",
   "author": "The Kuzzle Team <support@kuzzle.io>",
-  "version": "2.0.4",
+  "version": "2.1.0-beta.1",
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run --silent lint && npm run unit-testing",
     "lint": "eslint --max-warnings=0 ./lib",
-    "unit-testing": "./node_modules/.bin/mocha test/",
+    "unit-testing": "jest",
     "doc-prepare": "kuzdoc framework:install",
     "doc-dev": "kuzdoc repo:dev -d /official-plugins/s3/2/ -v 2",
     "doc-build": "kuzdoc repo:build -d /official-plugins/s3/2/ -v 2",
@@ -33,16 +33,15 @@
   },
   "homepage": "https://github.com/kuzzleio/kuzzle-plugin-s3#readme",
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.46.0",
+    "jest": "^29.7.0",
     "kuzdoc": "^2.5.4",
     "kuzzle-common-objects": "^5.0.2",
-    "mocha": "^5.2.0",
-    "mock-require": "^3.0.3",
     "rewire": "^6.0.0",
     "should": "^13.2.3",
-    "should-sinon": "0.0.6",
-    "sinon": "^7.2.3"
+    "should-sinon": "0.0.6"
   },
   "dependencies": {
     "@commitlint/cli": "^17.6.7",
