@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.0...v3.0.1) (2025-01-02)
+
+
+### Bug Fixes
+
+* release 3.0.1 ([4921845](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/4921845b66d6925fcd52e9e850fec0b4390743e4))
+
 # [3.0.0](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.1.1...v3.0.0) (2025-01-02)
 
 
