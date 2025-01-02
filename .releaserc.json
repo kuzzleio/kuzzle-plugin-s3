@@ -3,30 +3,18 @@
     "semantic-release-config-kuzzle"
   ],
   "branches": [
-    {
-      "name": "master"
-    },
+    "master",
     {
       "name": "beta",
       "prerelease": true
     },
     {
       "name": "2-stable",
-      "range": "2.x"
-    },
-    {
-      "name": "2-beta",
-      "range": "2.x",
-      "prerelease": true
+      "range": "2"
     },
     {
       "name": "1-stable",
-      "range": "1.x"
-    },
-    {
-      "name": "1-beta",
-      "range": "1.x",
-      "prerelease": true
+      "range": "1"
     }
   ]
 }
