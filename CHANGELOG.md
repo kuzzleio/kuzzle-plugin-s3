@@ -1,3 +1,10 @@
+# [2.1.0-beta.2](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2025-01-02)
+
+
+### Bug Fixes
+
+* trigger release ([78ec538](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/78ec53880806e6c2af4e935d614d57c17e6e984b))
+
 # [2.1.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v2.0.4...v2.1.0-beta.1) (2025-01-02)
 
 
