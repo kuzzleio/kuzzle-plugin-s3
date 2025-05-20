@@ -6,7 +6,7 @@ title: getFilesKeys
 
 # getFilesKeys
 
-List the files keys uploaded to an S3 Bucket. Can be filtered on directories using filter.
+List the files keys uploaded to an S3 Bucket. Can be filtered on directories using prefix.
 
 ---
 
