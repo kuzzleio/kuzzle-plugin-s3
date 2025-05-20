@@ -6,7 +6,7 @@ title: getFilesKeys
 
 # getFilesKeys
 
-List the files keys uploaded to an S3 Bucket.
+List the files keys uploaded to an S3 Bucket. Can be filtered on directories using filter.
 
 ---
 
@@ -15,7 +15,7 @@ List the files keys uploaded to an S3 Bucket.
 ### HTTP
 
 ```http
-URL: http://kuzzle:7512/file/list-keys/<bucketRegion>/<bucketName>
+URL: http://kuzzle:7512/file/list-keys/<bucketRegion>/<bucketName>?prefix=<optional prefix>
 Method: GET
 ```
 
@@ -25,8 +25,9 @@ Method: GET
 {
   "controller": "s3/file",
   "action": "getFilesKeys",
-  "bucketName": "bucket-name"
-  "bucketRegion": "bucket-region"
+  "bucketName": "bucket-name",
+  "bucketRegion": "bucket-region",
+  "prefix": "optional/path/prefix/"
 }
 ```
 
