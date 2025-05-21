@@ -1,3 +1,10 @@
+# [3.1.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.1...v3.1.0-beta.1) (2025-05-21)
+
+
+### Features
+
+* **s3/file:** support prefix filtering in getFilesKeys action ([cfeaa48](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/cfeaa48f32bda8e67b23dd0f6431cceb4facba1e))
+
 ## [3.0.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.0...v3.0.1) (2025-01-02)
 
 
