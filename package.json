@@ -1,7 +1,7 @@
 {
   "name": "kuzzle-plugin-s3",
   "author": "The Kuzzle Team <support@kuzzle.io>",
-  "version": "3.1.0-beta.1",
+  "version": "3.1.0-beta.2",
   "description": "Kuzzle plugin to upload file on S3 using presigned URL",
   "main": "lib/index.js",
   "scripts": {
