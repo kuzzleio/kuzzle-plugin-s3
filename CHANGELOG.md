@@ -1,3 +1,29 @@
+# [3.1.0](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.1...v3.1.0) (2025-11-09)
+
+
+### Bug Fixes
+
+* conflict with master branch ([1589446](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/158944682f9ef813f9e0dcf52c1f33bfdb1c143e))
+
+
+### Features
+
+* **s3/file:** support prefix filtering in getFilesKeys action ([cfeaa48](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/cfeaa48f32bda8e67b23dd0f6431cceb4facba1e))
+
+# [3.1.0-beta.2](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.1.0-beta.1...v3.1.0-beta.2) (2025-11-09)
+
+
+### Bug Fixes
+
+* conflict with master branch ([1589446](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/158944682f9ef813f9e0dcf52c1f33bfdb1c143e))
+
+# [3.1.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.1...v3.1.0-beta.1) (2025-05-21)
+
+
+### Features
+
+* **s3/file:** support prefix filtering in getFilesKeys action ([cfeaa48](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/cfeaa48f32bda8e67b23dd0f6431cceb4facba1e))
+
 ## [3.0.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.0...v3.0.1) (2025-01-02)
 
 
