@@ -415,5 +415,45 @@ describe('BucketController', () => {
       await expect(bucketController.empty(request)).rejects.toThrow('AWS Error');
       expect(mockS3Send).toHaveBeenCalled();
     });
+
+    test('empty a bucket using a prefix', async () => {
+      const theTestRequest = {
+        input: {
+          args: {
+            bucketName: 'my-bucket',
+            bucketRegion: 'us-east-1',
+            prefix: 'logs/',
+          },
+        },
+      };
+
+      mockS3Send
+        .mockResolvedValueOnce({
+          IsTruncated: false,
+          Contents: [
+            { Key: 'logs/object1' },
+            { Key: 'logs/object2' },
+          ],
+        })
+        .mockResolvedValueOnce({});
+
+      const result = await bucketController.empty(theTestRequest);
+
+      expect(mockS3Send).toHaveBeenCalledTimes(2);
+      expect(mockS3Send.mock.calls[0][0]).toMatchObject({
+        Bucket: 'my-bucket',
+        Prefix: 'logs/',
+      });
+      expect(mockS3Send.mock.calls[1][0]).toMatchObject({
+        Bucket: 'my-bucket',
+        Delete: {
+          Objects: [
+            { Key: 'logs/object1' },
+            { Key: 'logs/object2' },
+          ],
+        },
+      });
+      expect(result).toEqual({ message: 'Bucket "my-bucket" has been emptied.' });
+    });
   });
 });

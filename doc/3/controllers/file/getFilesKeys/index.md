@@ -37,6 +37,7 @@ Method: GET
 
 - `bucketName` : bucketName
 - `bucketRegion` : bucketRegion
+- `prefix` (optionnal) : Can be use to retrieve specific a folder ex:  `path/to/folder/`
 
 ---
 
@@ -52,7 +53,7 @@ Returns an array of file key objects object with the same info as the one return
   "controller": "s3/file",
   "requestId": "<unique request identifier>",
   "result": {
-    "filesKeys": [
+    "files": [
         {
           "Key": 'https://s3.eu-west-3.amazonaws.com/half-life/xen/0-headcrab.png',
           "LastModified": '2019-12-13T23:18:10.593Z',
@@ -79,9 +80,3 @@ Returns an array of file key objects object with the same info as the one return
   }
 }
 ```
-
----
-
-## Possible errors
-
-- [Common errors](/core/1/api/essentials/errors#common-errors)

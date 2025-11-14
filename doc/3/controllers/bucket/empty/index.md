@@ -6,7 +6,7 @@ title: empty
 
 # empty
 
-Empties all objects from an S3 bucket while keeping the bucket itself intact.
+Empties all objects from an S3 bucket while keeping the bucket itself intact. If the option `prefix` is used it will only empty what's match the prefix, default to match all
 
 ## Query Syntax
 
@@ -24,6 +24,7 @@ Body:
   "action": "empty",
   "bucketName": "<bucketName>",
   "bucketRegion": "<bucketRegion>"
+  "prefix": "<prefix>"
 }
 ```
 
@@ -35,6 +36,7 @@ Body:
   "action": "empty",
   "bucketName": "<bucketName>",
   "bucketRegion": "<bucketRegion>"
+  "prefix": "<prefix>"
 }
 ```
 
@@ -42,6 +44,7 @@ Body:
 
 - `bucketName`: The name of the bucket to empty. 
 - `bucketRegion`: The region where the bucket is located.
+- `prefix`: The pattern to use to empty only file following the pattern
 
 ## Response
 
