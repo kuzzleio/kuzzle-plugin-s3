@@ -1,3 +1,18 @@
+## [3.2.0-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.1.0...v3.2.0-beta.1) (2025-11-14)
+
+
+### Features
+
+* add the ability to filter while emptying a bucket ([93d88b3](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/93d88b3ea7eb0bf26b352ee32f56a5db0d51261c))
+
+
+### Bug Fixes
+
+* semantic missing plugin ([34beafe](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/34beafe7f3821acd4f2d348468dd0040752d94b7))
+* semantic wierd behaviour ([e6b12cc](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/e6b12cc1c0517db51d01f8678d6965f320f8c1b3))
+* semantic-release stuff ([46cca0e](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/46cca0e8a20916977f8ed6b26fa90da3b77a86dd))
+* semantic? ([e23b011](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/e23b0110b359c6e96c8a99e318ae9432ded7f5df))
+
 # [3.1.0](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.0.1...v3.1.0) (2025-11-09)
 
 
