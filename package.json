@@ -40,7 +40,14 @@
     "rewire": "6.0.0",
     "semantic-release-config-kuzzle": "1.1.2",
     "should": "13.2.3",
-    "should-sinon": "0.0.6"
+    "should-sinon": "0.0.6",
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^10.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/release-notes-generator": "^11.0.4",
+    "semantic-release-slack-bot": "^4.0.2"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.931.0",
