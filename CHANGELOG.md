@@ -1,3 +1,14 @@
+## [3.2.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.2.0...v3.2.1) (2025-12-10)
+
+
+### Bug Fixes
+
+* list all object from file controller wasn't returning all files ([15df61e](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/15df61ee64b5d96dd0747f57236584df0b483d0d))
+* modify the token used for release ([d919192](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/d919192c9a63aa6359c2559adc0f97b1f622c469))
+* modify the token used for release ([d6221f7](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/d6221f7db67c28263743ba834622ed22df2b31ad))
+* token ([d566cd6](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/d566cd64b413e48c63f61a8a9809285cb29c5886))
+* token ([22aa7f8](https://github.com/kuzzleio/kuzzle-plugin-s3/commit/22aa7f82543efffe561542e89150ec42e311adf7))
+
 ## [3.2.1-beta.1](https://github.com/kuzzleio/kuzzle-plugin-s3/compare/v3.2.0...v3.2.1-beta.1) (2025-12-10)
 
 
