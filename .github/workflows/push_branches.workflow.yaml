@@ -31,10 +31,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # `client-id` remplace `app-id` (déprécié) : l'action passe la valeur telle
+      # quelle en `iss` du JWT, que GitHub accepte en Client ID comme en App ID
+      # numérique, d'où la variable `KUZZLE_BOT_APP_ID` inchangée.
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: ${{ vars.KUZZLE_BOT_APP_ID }}
+          client-id: ${{ vars.KUZZLE_BOT_APP_ID }}
           private-key: ${{ secrets.KUZZLE_BOT_PRIVATE_KEY }}
 
       - name: Release
